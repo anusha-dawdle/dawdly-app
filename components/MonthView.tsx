@@ -6,7 +6,6 @@ import {
   startOfMonth,
   formatMonthYear,
   isToday,
-  isSameMonth,
 } from "@/lib/dates";
 import CharmIcon from "./CharmIcon";
 
@@ -25,9 +24,8 @@ export default function MonthView({
 }: MonthViewProps) {
   const monthStart = startOfMonth(anchor);
   const days = getDaysInMonth(anchor);
-  const firstDay = new Date(monthStart + "T12:00:00").getDay(); // 0=Sun offset
+  const firstDay = new Date(monthStart + "T12:00:00").getDay();
 
-  // Pad with empty slots for the first week
   const cells: (string | null)[] = [
     ...Array(firstDay).fill(null),
     ...days,
@@ -35,16 +33,17 @@ export default function MonthView({
 
   return (
     <div className="flex flex-col h-full px-4 pb-4">
-      <div className="px-2 pt-2 pb-3">
+      {/* Heading — matches week view style */}
+      <div className="pt-3 pb-2 text-center">
         <span
-          className="text-lg font-semibold"
+          className="text-3xl font-semibold"
           style={{ color: "#7C3D1A", fontFamily: "Georgia, serif" }}
         >
           {formatMonthYear(anchor)}
         </span>
       </div>
 
-      {/* Weekday headers */}
+      {/* Weekday column labels */}
       <div className="grid grid-cols-7 mb-1">
         {WEEKDAY_LABELS.map((w) => (
           <div
@@ -58,26 +57,29 @@ export default function MonthView({
       </div>
 
       {/* Day grid */}
-      <div className="grid grid-cols-7 flex-1 gap-px">
+      <div className="grid grid-cols-7 flex-1" style={{ gap: 2 }}>
         {cells.map((day, i) => {
           if (!day) return <div key={`empty-${i}`} />;
           const events = getEventsForDate(day);
           const todayDay = isToday(day);
           const dayNum = parseInt(day.split("-")[2]);
+          const visible = events.slice(0, 2);
+          const overflow = events.length - visible.length;
 
           return (
             <button
               key={day}
               onClick={() => onDayClick(day)}
-              className="flex flex-col rounded-xl p-1 transition-colors text-left"
+              className="flex flex-col rounded-xl p-1.5 transition-colors text-left"
               style={{
                 background: todayDay ? "#FFFBEF" : "transparent",
                 border: todayDay ? "1.5px solid #FDE68A" : "1.5px solid transparent",
-                minHeight: 72,
+                minHeight: 80,
               }}
             >
+              {/* Day number */}
               <span
-                className="text-xs font-semibold mb-1 w-6 h-6 flex items-center justify-center rounded-full"
+                className="text-xs font-semibold mb-1 w-5 h-5 flex items-center justify-center rounded-full flex-shrink-0"
                 style={{
                   color: todayDay ? "#D97706" : "#7C3D1A",
                   background: todayDay ? "#FEF3C7" : "transparent",
@@ -85,20 +87,23 @@ export default function MonthView({
               >
                 {dayNum}
               </span>
-              <div className="flex flex-wrap gap-0.5">
-                {events.slice(0, 4).map((event) => (
-                  <CharmIcon
-                    key={event.id}
-                    charmId={event.charmId}
-                    size={22}
-                  />
+
+              {/* Events: charm + truncated title */}
+              <div className="flex flex-col gap-0.5 w-full">
+                {visible.map((event) => (
+                  <div key={event.id} className="flex items-center gap-1 w-full min-w-0">
+                    <CharmIcon charmId={event.charmId} size={18} />
+                    <span
+                      className="truncate"
+                      style={{ color: "#7C3D1A", fontSize: 10, lineHeight: "14px" }}
+                    >
+                      {event.title}
+                    </span>
+                  </div>
                 ))}
-                {events.length > 4 && (
-                  <span
-                    className="text-xs"
-                    style={{ color: "#B0A090", lineHeight: "22px" }}
-                  >
-                    +{events.length - 4}
+                {overflow > 0 && (
+                  <span style={{ color: "#B0A090", fontSize: 10 }}>
+                    +{overflow} more
                   </span>
                 )}
               </div>

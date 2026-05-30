@@ -40,7 +40,7 @@ export default function WeekView({
       {/* Month label */}
       <div className="px-6 pt-3 pb-2 text-center">
         <span
-          className="text-4xl font-semibold"
+          className="text-3xl font-semibold"
           style={{ color: "#7C3D1A", fontFamily: "Georgia, serif" }}
         >
           {monthLabel}
