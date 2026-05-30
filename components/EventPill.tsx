@@ -17,12 +17,12 @@ export default function EventPill({
   if (stacked) {
     return (
       <div className="group relative flex flex-col items-center gap-0.5 py-2 px-1 w-full">
-        <CharmIcon charmId={event.charmId} size={44} />
+        <CharmIcon charmId={event.charmId} size={64} />
         <p
           className="text-center leading-tight w-full"
           style={{
             color: "#2D2017",
-            fontSize: 10,
+            fontSize: 12,
             display: "-webkit-box",
             WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical",
