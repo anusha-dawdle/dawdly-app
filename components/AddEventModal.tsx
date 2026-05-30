@@ -160,7 +160,7 @@ export default function AddEventModal({
             className="flex-1 rounded-xl py-2.5 text-sm font-semibold transition-all"
             style={{
               background: title.trim() ? "#F59E0B" : "#E8DDD0",
-              color: title.trim() ? "#1C1200" : "#B0A090",
+              color: title.trim() ? "#3B1A08" : "#B0A090",
             }}
           >
             Add to my week ✨

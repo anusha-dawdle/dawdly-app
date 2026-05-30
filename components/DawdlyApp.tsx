@@ -124,7 +124,7 @@ export default function DawdlyApp() {
           <button
             onClick={() => openAddModal(anchor)}
             className="px-4 py-1.5 rounded-xl text-sm font-semibold transition-colors"
-            style={{ background: "#F59E0B", color: "#1C1200" }}
+            style={{ background: "#F59E0B", color: "#3B1A08" }}
           >
             + Add
           </button>

@@ -42,8 +42,8 @@ export const CHARMS: Record<CharmId, Charm> = {
     label: "Movie",
     svg: `<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect width="64" height="64" rx="16" fill="#F0F0FF"/>
-      <rect x="12" y="18" width="40" height="28" rx="4" fill="#4B5563" stroke="#374151" stroke-width="1.5"/>
-      <rect x="12" y="18" width="40" height="5" rx="2" fill="#1F2937"/>
+      <rect x="12" y="18" width="40" height="28" rx="4" fill="#5C3D2A" stroke="#3B2010" stroke-width="1.5"/>
+      <rect x="12" y="18" width="40" height="5" rx="2" fill="#2E1608"/>
       <circle cx="18" cy="20.5" r="1.5" fill="#FFE066"/>
       <circle cx="24" cy="20.5" r="1.5" fill="#FFE066"/>
       <path d="M28 32l10-5-10-5v10z" fill="#FFE066"/>
