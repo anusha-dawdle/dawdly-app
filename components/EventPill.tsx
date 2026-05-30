@@ -2,40 +2,65 @@
 
 import type { DawdlyEvent } from "@/lib/types";
 import CharmIcon from "./CharmIcon";
-import { CHARMS } from "@/lib/charms";
 
 interface EventPillProps {
   event: DawdlyEvent;
   onDelete?: (id: string) => void;
-  compact?: boolean;
+  stacked?: boolean; // week view: big icon on top, title below
 }
 
 export default function EventPill({
   event,
   onDelete,
-  compact = false,
+  stacked = false,
 }: EventPillProps) {
-  const charm = CHARMS[event.charmId];
+  if (stacked) {
+    return (
+      <div className="group relative flex flex-col items-center gap-0.5 py-2 px-1 w-full">
+        <CharmIcon charmId={event.charmId} size={44} />
+        <p
+          className="text-center leading-tight w-full"
+          style={{
+            color: "#2D2017",
+            fontSize: 10,
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+          }}
+        >
+          {event.title}
+        </p>
+        {onDelete && (
+          <button
+            onClick={() => onDelete(event.id)}
+            className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity rounded-full w-4 h-4 flex items-center justify-center"
+            style={{ color: "#B0A090", background: "#F0EBE0", fontSize: 11 }}
+            title="Remove"
+          >
+            ×
+          </button>
+        )}
+      </div>
+    );
+  }
 
+  // Day view: horizontal layout
   return (
     <div
-      className="group flex items-center gap-1.5 rounded-xl px-2 py-1 w-full relative"
-      style={{
-        background: "#FFFDF9",
-        border: "1.5px solid #F0EBE0",
-        minHeight: compact ? 28 : 36,
-      }}
+      className="group flex items-center gap-2 rounded-xl px-3 py-2 w-full relative"
+      style={{ background: "#FFFDF9", border: "1.5px solid #F0EBE0" }}
     >
-      <CharmIcon charmId={event.charmId} size={compact ? 22 : 28} />
+      <CharmIcon charmId={event.charmId} size={32} />
       <div className="flex-1 min-w-0">
         <p
-          className="truncate text-xs font-medium leading-tight"
+          className="truncate text-sm font-medium leading-tight"
           style={{ color: "#2D2017" }}
         >
           {event.title}
         </p>
-        {!compact && event.startTime && (
-          <p className="text-xs" style={{ color: "#B0A090" }}>
+        {event.startTime && (
+          <p className="text-xs mt-0.5" style={{ color: "#B0A090" }}>
             {formatTime(event.startTime)}
           </p>
         )}
@@ -43,8 +68,8 @@ export default function EventPill({
       {onDelete && (
         <button
           onClick={() => onDelete(event.id)}
-          className="opacity-0 group-hover:opacity-100 transition-opacity text-xs rounded-full w-4 h-4 flex items-center justify-center flex-shrink-0"
-          style={{ color: "#B0A090", background: "#F0EBE0" }}
+          className="opacity-0 group-hover:opacity-100 transition-opacity rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0"
+          style={{ color: "#B0A090", background: "#F0EBE0", fontSize: 12 }}
           title="Remove"
         >
           ×

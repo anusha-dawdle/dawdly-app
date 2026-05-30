@@ -57,3 +57,16 @@ export function isToday(iso: string): boolean {
 export function isSameMonth(iso: string, anchor: string): boolean {
   return iso.slice(0, 7) === anchor.slice(0, 7);
 }
+
+export function relativeDate(iso: string): string {
+  const todayIso = today();
+  const t = new Date(todayIso + "T12:00:00");
+  const d = new Date(iso + "T12:00:00");
+  const diff = Math.round((d.getTime() - t.getTime()) / 86_400_000);
+
+  if (diff === 1) return "tomorrow";
+  if (diff < 7) return `in ${diff} days`;
+  if (diff < 14) return "next week";
+  if (diff < 28) return `in ${Math.floor(diff / 7)} weeks`;
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}

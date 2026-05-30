@@ -136,6 +136,7 @@ export default function DawdlyApp() {
         {view === "week" && (
           <WeekView
             anchor={anchor}
+            events={events}
             getEventsForDate={getEventsForDate}
             onDayClick={handleDayClick}
             onDeleteEvent={deleteEvent}
