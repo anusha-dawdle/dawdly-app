@@ -128,24 +128,26 @@ export default function WeekView({
       {/* On the horizon strip */}
       {horizonEvents.length > 0 && (
         <div
-          className="flex-shrink-0 px-4 pb-3 pt-2"
+          className="flex-shrink-0 px-5 pt-3 pb-6"
           style={{ borderTop: "1px solid #F0EBE0" }}
         >
-          <div className="flex items-center gap-3 overflow-x-auto pb-1">
-            <span
-              className="text-xs font-medium whitespace-nowrap flex-shrink-0"
-              style={{
-                color: "#B0A090",
-                fontFamily: "Georgia, serif",
-                fontStyle: "italic",
-              }}
-            >
-              on the horizon
-            </span>
+          <p
+            className="mb-2.5"
+            style={{
+              color: "#8B7355",
+              fontFamily: "Georgia, serif",
+              fontStyle: "italic",
+              fontSize: 15,
+              fontWeight: 600,
+            }}
+          >
+            on the horizon
+          </p>
+          <div className="flex gap-2 overflow-x-auto pb-1">
             {horizonEvents.map((event) => (
               <div
                 key={event.id}
-                className="flex items-center gap-1.5 rounded-full px-3 py-1 flex-shrink-0"
+                className="flex items-center gap-1.5 rounded-full px-3 py-1.5 flex-shrink-0"
                 style={{
                   background: "#F5EFE6",
                   border: "1px solid #E8DDD0",
@@ -153,7 +155,7 @@ export default function WeekView({
               >
                 <CharmIcon charmId={event.charmId} size={20} />
                 <span
-                  className="text-xs font-medium whitespace-nowrap"
+                  className="text-sm font-medium whitespace-nowrap"
                   style={{ color: "#2D2017" }}
                 >
                   {event.title}

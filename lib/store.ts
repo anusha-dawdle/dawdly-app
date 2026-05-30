@@ -51,7 +51,15 @@ export function useEvents() {
   }, []);
 
   const getEventsForDate = useCallback(
-    (date: string) => events.filter((e) => e.date === date),
+    (date: string) =>
+      events
+        .filter((e) => e.date === date)
+        .sort((a, b) => {
+          if (!a.startTime && !b.startTime) return 0;
+          if (!a.startTime) return 1;
+          if (!b.startTime) return -1;
+          return a.startTime.localeCompare(b.startTime);
+        }),
     [events]
   );
 
