@@ -64,7 +64,7 @@ export default function DawdlyApp() {
     >
       {/* Header */}
       <header
-        className="flex items-center justify-between px-6 py-3 flex-shrink-0"
+        className="grid grid-cols-3 items-center px-6 py-3 flex-shrink-0"
         style={{ borderBottom: "1px solid #F0EBE0" }}
       >
         <div className="flex items-center gap-2">
@@ -78,6 +78,7 @@ export default function DawdlyApp() {
         </div>
 
         {/* View switcher */}
+        <div className="flex justify-center">
         <div
           className="flex rounded-xl overflow-hidden"
           style={{ background: "#F5EFE6", padding: 2 }}
@@ -97,9 +98,10 @@ export default function DawdlyApp() {
             </button>
           ))}
         </div>
+        </div>
 
         {/* Nav + add */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 justify-end">
           <button
             onClick={handleToday}
             className="px-3 py-1.5 rounded-xl text-sm font-medium"
