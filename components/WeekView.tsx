@@ -147,25 +147,27 @@ export default function WeekView({
             {horizonEvents.map((event) => (
               <div
                 key={event.id}
-                className="flex items-center gap-1.5 rounded-full px-3 py-1.5 flex-shrink-0"
+                className="flex items-center gap-2.5 rounded-2xl px-3 py-2 flex-shrink-0"
                 style={{
                   background: "#F5EFE6",
                   border: "1px solid #E8DDD0",
                 }}
               >
-                <CharmIcon charmId={event.charmId} size={20} />
-                <span
-                  className="text-sm font-medium whitespace-nowrap"
-                  style={{ color: "#2D2017" }}
-                >
-                  {event.title}
-                </span>
-                <span
-                  className="text-xs whitespace-nowrap"
-                  style={{ color: "#B0A090" }}
-                >
-                  {relativeDate(event.date)}
-                </span>
+                <CharmIcon charmId={event.charmId} size={24} />
+                <div className="flex flex-col">
+                  <span
+                    className="text-sm font-medium whitespace-nowrap leading-snug"
+                    style={{ color: "#2D2017" }}
+                  >
+                    {event.title}
+                  </span>
+                  <span
+                    className="text-xs whitespace-nowrap leading-snug"
+                    style={{ color: "#B0A090" }}
+                  >
+                    {relativeDate(event.date)}
+                  </span>
+                </div>
               </div>
             ))}
           </div>
