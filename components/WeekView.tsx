@@ -38,10 +38,10 @@ export default function WeekView({
   return (
     <div className="flex flex-col h-full">
       {/* Month label */}
-      <div className="px-6 pt-2 pb-1">
+      <div className="px-6 pt-3 pb-2">
         <span
-          className="text-sm font-medium"
-          style={{ color: "#B0A090", fontFamily: "Georgia, serif" }}
+          className="text-2xl font-semibold"
+          style={{ color: "#2D2017", fontFamily: "Georgia, serif" }}
         >
           {monthLabel}
         </span>
