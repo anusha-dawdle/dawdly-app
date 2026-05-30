@@ -17,11 +17,11 @@ export default function EventPill({
   if (stacked) {
     return (
       <div className="group relative flex flex-col items-center gap-0.5 py-2 px-1 w-full">
-        <CharmIcon charmId={event.charmId} size={64} />
+        <CharmIcon charmId={event.charmId} size={88} />
         <p
           className="text-center leading-tight w-full"
           style={{
-            color: "#2D2017",
+            color: "#D97706",
             fontSize: 12,
             display: "-webkit-box",
             WebkitLineClamp: 2,
@@ -55,7 +55,7 @@ export default function EventPill({
       <div className="flex-1 min-w-0">
         <p
           className="truncate text-sm font-medium leading-tight"
-          style={{ color: "#2D2017" }}
+          style={{ color: "#7C3D1A" }}
         >
           {event.title}
         </p>

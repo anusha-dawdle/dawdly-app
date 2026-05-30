@@ -90,7 +90,7 @@ export default function WeekView({
                   <span
                     className="text-lg font-semibold mt-0.5"
                     style={{
-                      color: todayDay ? "#D97706" : "#2D2017",
+                      color: todayDay ? "#D97706" : "#7C3D1A",
                       fontFamily: "Georgia, serif",
                     }}
                   >
@@ -157,7 +157,7 @@ export default function WeekView({
                 <div className="flex flex-col">
                   <span
                     className="text-sm font-medium whitespace-nowrap leading-snug"
-                    style={{ color: "#2D2017" }}
+                    style={{ color: "#7C3D1A" }}
                   >
                     {event.title}
                   </span>

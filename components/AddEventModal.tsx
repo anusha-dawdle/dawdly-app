@@ -47,7 +47,7 @@ export default function AddEventModal({
       >
         <h2
           className="text-xl font-semibold mb-5"
-          style={{ color: "#2D2017", fontFamily: "Georgia, serif" }}
+          style={{ color: "#7C3D1A", fontFamily: "Georgia, serif" }}
         >
           Something to look forward to
         </h2>
@@ -94,7 +94,7 @@ export default function AddEventModal({
             style={{
               background: "#FFF8F0",
               border: "1.5px solid #E8DDD0",
-              color: "#2D2017",
+              color: "#7C3D1A",
             }}
             autoFocus
           />
@@ -110,7 +110,7 @@ export default function AddEventModal({
             style={{
               background: "#FFF8F0",
               border: "1.5px solid #E8DDD0",
-              color: "#2D2017",
+              color: "#7C3D1A",
             }}
           />
           <input
@@ -121,7 +121,7 @@ export default function AddEventModal({
             style={{
               background: "#FFF8F0",
               border: "1.5px solid #E8DDD0",
-              color: "#2D2017",
+              color: "#7C3D1A",
             }}
           />
         </div>
@@ -137,7 +137,7 @@ export default function AddEventModal({
             style={{
               background: "#FFF8F0",
               border: "1.5px solid #E8DDD0",
-              color: "#2D2017",
+              color: "#7C3D1A",
             }}
           />
         </div>

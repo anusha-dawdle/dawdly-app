@@ -33,7 +33,7 @@ export default function DayView({
         <p
           className="text-6xl font-bold"
           style={{
-            color: todayDay ? "#D97706" : "#2D2017",
+            color: todayDay ? "#D97706" : "#7C3D1A",
             fontFamily: "Georgia, serif",
           }}
         >

@@ -38,7 +38,7 @@ export default function MonthView({
       <div className="px-2 pt-2 pb-3">
         <span
           className="text-lg font-semibold"
-          style={{ color: "#2D2017", fontFamily: "Georgia, serif" }}
+          style={{ color: "#7C3D1A", fontFamily: "Georgia, serif" }}
         >
           {formatMonthYear(anchor)}
         </span>
@@ -79,7 +79,7 @@ export default function MonthView({
               <span
                 className="text-xs font-semibold mb-1 w-6 h-6 flex items-center justify-center rounded-full"
                 style={{
-                  color: todayDay ? "#D97706" : "#2D2017",
+                  color: todayDay ? "#D97706" : "#7C3D1A",
                   background: todayDay ? "#FEF3C7" : "transparent",
                 }}
               >
