@@ -115,7 +115,7 @@ export default function DawdlyApp() {
         {/* Nav + add */}
         <div className="flex items-center gap-2 justify-end">
           {/* Charm size control — week and day only */}
-          {(view === "week" || view === "day") && (
+          {view === "week" && (
             <div className="flex items-center gap-0.5 rounded-xl overflow-hidden" style={{ background: "rgba(180,140,90,0.12)" }}>
               <button
                 onClick={decrease}
@@ -196,7 +196,6 @@ export default function DawdlyApp() {
             onAddClick={() => openAddModal(anchor)}
             onDeleteEvent={deleteEvent}
             onEventClick={openEditModal}
-            charmSize={charmSize}
           />
         )}
       </main>
