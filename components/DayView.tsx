@@ -135,7 +135,7 @@ function DayEventCard({ event, onDelete }: { event: DawdlyEvent; onDelete: (id: 
         boxShadow: "0 3px 14px rgba(74,61,49,0.13), 0 1px 4px rgba(74,61,49,0.08)",
       }}
     >
-      <CharmIcon charmId={event.charmId} size={130} className="flex-shrink-0" />
+      <CharmIcon charmId={event.charmId} size={160} className="flex-shrink-0" />
 
       {/* Text */}
       <div className="flex-1 min-w-0">

@@ -121,7 +121,7 @@ export default function WeekView({
                 </button>
 
                 {/* Events as scrapbook cards */}
-                <div className="flex-1 flex flex-col gap-2 px-1.5 pb-2 overflow-y-auto items-center">
+                <div className="flex-1 flex flex-col gap-0 px-0.5 pb-1 overflow-y-auto items-center">
                   {dayEvents.length === 0 && (
                     <button
                       onClick={() => onDayClick(day)}
@@ -143,7 +143,7 @@ export default function WeekView({
                         ink={col.ink}
                         onDelete={onDeleteEvent}
                         onAdd={() => onDayClick(day)}
-                        iconSize={120}
+                        iconSize={160}
                       />
                     );
                   })}
@@ -219,7 +219,7 @@ function WeekEventCard({
   bg,
   ink,
   onDelete,
-  iconSize = 120,
+  iconSize = 160,
 }: {
   event: DawdlyEvent;
   deg: number;
@@ -231,24 +231,27 @@ function WeekEventCard({
 }) {
   return (
     <div
-      className="group relative flex flex-col items-center pb-2 pt-2 px-1 w-full"
+      className="group relative flex flex-col items-center w-full"
       style={{
         transform: `rotate(${deg}deg)`,
-        maxWidth: 130,
+        paddingTop: 6,
+        paddingBottom: 2,
       }}
     >
       <CharmIcon charmId={event.charmId} size={iconSize} />
       <p
-        className="text-center mt-1 w-full"
+        className="text-center w-full"
         style={{
           fontFamily: "var(--font-hand)",
           fontSize: 13,
           color: ink,
-          lineHeight: 1.25,
+          lineHeight: 1.2,
+          marginTop: 2,
           display: "-webkit-box",
           WebkitLineClamp: 2,
           WebkitBoxOrient: "vertical",
           overflow: "hidden",
+          paddingInline: 4,
         }}
       >
         {event.title}

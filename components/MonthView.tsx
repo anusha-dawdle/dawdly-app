@@ -130,7 +130,7 @@ export default function MonthView({ anchor, getEventsForDate, onDayClick }: Mont
               <div className="flex flex-col gap-0.5 w-full">
                 {visible.map((event) => (
                   <div key={event.id} className="flex items-center gap-1 min-w-0">
-                    <CharmIcon charmId={event.charmId} size={30} />
+                    <CharmIcon charmId={event.charmId} size={40} />
                     <span
                       className="truncate"
                       style={{
