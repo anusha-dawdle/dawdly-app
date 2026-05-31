@@ -1,10 +1,10 @@
 "use client";
 
-import type { CharmId } from "@/lib/types";
-import { CHARMS } from "@/lib/charms";
+import Image from "next/image";
+import { CHARMS, resolveCharmId, DEFAULT_CHARM_ID } from "@/lib/charms";
 
 interface CharmIconProps {
-  charmId: CharmId;
+  charmId: string;
   size?: number;
   className?: string;
 }
@@ -14,13 +14,23 @@ export default function CharmIcon({
   size = 40,
   className = "",
 }: CharmIconProps) {
-  const charm = CHARMS[charmId];
-  if (!charm) return null;
+  const resolved = resolveCharmId(charmId);
+  const charm = CHARMS[resolved] ?? CHARMS[DEFAULT_CHARM_ID];
+  const src = `/pngs/${encodeURIComponent(charm.file)}`;
+
   return (
     <span
       className={className}
-      style={{ display: "inline-block", width: size, height: size, flexShrink: 0 }}
-      dangerouslySetInnerHTML={{ __html: charm.svg }}
-    />
+      style={{ display: "inline-block", width: size, height: size, flexShrink: 0, position: "relative" }}
+    >
+      <Image
+        src={src}
+        alt={charm.label}
+        fill
+        style={{ objectFit: "contain" }}
+        sizes={`${size}px`}
+        priority={false}
+      />
+    </span>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import type { DawdlyEvent } from "./types";
+import { resolveCharmId } from "./charms";
 
 const STORAGE_KEY = "dawdly_events";
 
@@ -9,7 +10,10 @@ function loadEvents(): DawdlyEvent[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
+    if (!raw) return [];
+    const parsed: DawdlyEvent[] = JSON.parse(raw);
+    // Migrate legacy charmIds to new PNG-based ids
+    return parsed.map((e) => ({ ...e, charmId: resolveCharmId(e.charmId) }));
   } catch {
     return [];
   }

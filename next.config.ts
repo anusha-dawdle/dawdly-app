@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    unoptimized: true, // local PNGs with spaces in filenames
+  },
 };
 
 export default nextConfig;
