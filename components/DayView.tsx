@@ -89,31 +89,62 @@ export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEv
               + add something
             </button>
           </div>
-        ) : (
-          <div className="flex flex-col gap-4 max-w-lg mx-auto">
-            {events.map((event) => (
-              <DayEventCard
-                key={event.id}
-                event={event}
-                onDelete={onDeleteEvent}
-                onClick={onEventClick}
-              />
-            ))}
-            <button
-              onClick={onAddClick}
-              className="rounded-xl py-3 text-center"
-              style={{
-                background: "rgba(180,140,90,0.1)",
-                border: "1.5px dashed rgba(180,140,90,0.35)",
-                fontFamily: "var(--font-hand)",
-                fontSize: 16,
-                color: "var(--ink-faint)",
-              }}
-            >
-              + add more
-            </button>
-          </div>
-        )}
+        ) : (() => {
+          const personalEvents = events.filter((e) => e.kind !== "work");
+          const workEvents = events.filter((e) => e.kind === "work");
+          const hasBoth = personalEvents.length > 0 && workEvents.length > 0;
+
+          return (
+            <div className="flex flex-col gap-4 max-w-2xl mx-auto w-full">
+              {hasBoth ? (
+                <div className="flex gap-5 items-start">
+                  {/* Personal column */}
+                  <div className="flex-1 flex flex-col gap-4 min-w-0">
+                    <p style={{ fontFamily: "var(--font-hand)", fontSize: 13, color: "var(--ink-faint)", fontStyle: "italic" }}>
+                      plans
+                    </p>
+                    {personalEvents.map((event) => (
+                      <DayEventCard key={event.id} event={event} onDelete={onDeleteEvent} onClick={onEventClick} />
+                    ))}
+                  </div>
+
+                  {/* Dashed divider */}
+                  <div style={{ width: 1, alignSelf: "stretch", borderLeft: "1.5px dashed rgba(180,140,90,0.3)", flexShrink: 0 }} />
+
+                  {/* Work column */}
+                  <div className="flex-1 flex flex-col gap-3 min-w-0">
+                    <p style={{ fontFamily: "var(--font-hand)", fontSize: 13, color: "var(--ink-faint)", fontStyle: "italic" }}>
+                      work
+                    </p>
+                    {workEvents.map((event) => (
+                      <DayEventCard key={event.id} event={event} onDelete={onDeleteEvent} onClick={onEventClick} />
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-4 max-w-lg mx-auto w-full">
+                  {events.map((event) => (
+                    <DayEventCard key={event.id} event={event} onDelete={onDeleteEvent} onClick={onEventClick} />
+                  ))}
+                </div>
+              )}
+
+              <button
+                onClick={onAddClick}
+                className="rounded-xl py-3 text-center"
+                style={{
+                  background: "rgba(180,140,90,0.1)",
+                  border: "1.5px dashed rgba(180,140,90,0.35)",
+                  fontFamily: "var(--font-hand)",
+                  fontSize: 16,
+                  color: "var(--ink-faint)",
+                }}
+              >
+                + add more
+              </button>
+            </div>
+          );
+        })()}
       </div>
     </div>
   );
