@@ -88,7 +88,7 @@ export default function WeekView({
               )}
 
               <div
-                className="flex-1 flex flex-col min-w-0 rounded-2xl"
+                className="group/col flex-1 flex flex-col min-w-0 rounded-2xl"
                 style={{
                   background: todayDay ? "rgba(221,130,38,0.07)" : "transparent",
                   outline: todayDay ? "1.5px solid rgba(221,130,38,0.35)" : "none",
@@ -126,7 +126,7 @@ export default function WeekView({
                   {dayEvents.length === 0 && (
                     <button
                       onClick={() => onDayClick(day)}
-                      className="w-full mt-1 rounded-xl py-1 opacity-0 hover:opacity-100 transition-opacity text-center"
+                      className="w-full mt-1 rounded-xl py-1 opacity-0 group-hover/col:opacity-100 transition-opacity text-center"
                       style={{ fontSize: 12, color: "var(--ink-faint)", fontFamily: "var(--font-hand)" }}
                     >
                       + add
@@ -150,7 +150,7 @@ export default function WeekView({
                   {dayEvents.length > 0 && (
                     <button
                       onClick={() => onDayClick(day)}
-                      className="mt-0.5 rounded-lg px-3 py-0.5 opacity-0 hover:opacity-80 transition-opacity"
+                      className="mt-0.5 rounded-lg px-3 py-0.5 opacity-0 group-hover/col:opacity-80 transition-opacity"
                       style={{ fontSize: 12, color: "var(--ink-faint)", fontFamily: "var(--font-hand)", background: "rgba(180,140,90,0.1)" }}
                     >
                       + add

@@ -96,7 +96,7 @@ export default function MonthView({ anchor, getEventsForDate, onDayClick }: Mont
             <button
               key={day}
               onClick={() => onDayClick(day)}
-              className="flex flex-col text-left transition-colors hover:brightness-95"
+              className="group/day flex flex-col text-left transition-colors hover:brightness-95 relative"
               style={{
                 background: todayDay ? "rgba(221,130,38,0.09)" : "transparent",
                 borderRight: isLastCol ? "none" : "1px solid rgba(180,100,60,0.12)",
@@ -106,6 +106,14 @@ export default function MonthView({ anchor, getEventsForDate, onDayClick }: Mont
                 padding: "6px 5px 4px",
               }}
             >
+              {/* Hover + badge */}
+              <span
+                className="absolute top-1 right-1 opacity-0 group-hover/day:opacity-100 transition-opacity rounded-full w-4 h-4 flex items-center justify-center pointer-events-none"
+                style={{ background: "var(--accent)", color: "#fff", fontSize: 12, lineHeight: 1, fontWeight: 600 }}
+              >
+                +
+              </span>
+
               {/* Day number */}
               <span style={{
                 fontFamily: "var(--font-hand)",

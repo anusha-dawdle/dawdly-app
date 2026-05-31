@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import type { DawdlyEvent } from "@/lib/types";
-import { CHARM_LIST, DEFAULT_CHARM_ID, suggestCharm, type CharmId } from "@/lib/charms";
+import { CHARM_LIST, CHARM_CATEGORIES, CHARMS, DEFAULT_CHARM_ID, suggestCharm, type CharmId, type Charm } from "@/lib/charms";
 import CharmIcon from "./CharmIcon";
 
 interface AddEventModalProps {
@@ -131,9 +131,9 @@ export default function AddEventModal({ defaultDate, onSave, onClose }: AddEvent
             placeholder="search charms..."
             value={charmSearch}
             onChange={(e) => setCharmSearch(e.target.value)}
-            className="w-full rounded-xl px-3 py-2 outline-none mb-2"
+            className="w-full rounded-xl px-3 py-2 outline-none mb-3"
             style={{
-              fontFamily: "var(--font-hand)",
+              fontFamily: "var(--font-sans)",
               fontSize: 14,
               color: "var(--ink)",
               background: "rgba(180,140,90,0.08)",
@@ -141,38 +141,44 @@ export default function AddEventModal({ defaultDate, onSave, onClose }: AddEvent
             }}
           />
 
-          {/* Charm grid */}
-          <div
-            className="grid mb-4"
-            style={{
-              gridTemplateColumns: "repeat(7, 1fr)",
-              gap: 4,
-              maxHeight: 220,
-              overflowY: "auto",
-            }}
-          >
-            {filteredCharms.map((charm) => {
-              const isSelected = charm.id === effectiveCharm;
-              return (
-                <button
-                  key={charm.id}
-                  onClick={() => pickCharm(charm.id)}
-                  title={charm.label}
-                  className="rounded-xl p-0.5 transition-all"
-                  style={{
-                    background: isSelected ? "rgba(221,130,38,0.15)" : "transparent",
-                    outline: isSelected ? "2px solid var(--accent)" : "2px solid transparent",
-                    outlineOffset: 1,
-                  }}
-                >
-                  <CharmIcon charmId={charm.id} size={36} />
-                </button>
-              );
-            })}
-            {filteredCharms.length === 0 && (
-              <p className="col-span-7 text-center py-4" style={{ fontFamily: "var(--font-hand)", fontSize: 14, color: "var(--ink-faint)" }}>
-                no charms match "{charmSearch}"
-              </p>
+          {/* Charm picker — categorised or search results */}
+          <div className="mb-4" style={{ maxHeight: 280, overflowY: "auto" }}>
+            {charmSearch ? (
+              /* Flat search results */
+              filteredCharms.length === 0 ? (
+                <p className="text-center py-4" style={{ fontFamily: "var(--font-sans)", fontSize: 14, color: "var(--ink-faint)" }}>
+                  no charms match &ldquo;{charmSearch}&rdquo;
+                </p>
+              ) : (
+                <div className="grid" style={{ gridTemplateColumns: "repeat(5, 1fr)", gap: 6 }}>
+                  {filteredCharms.map((charm) => (
+                    <CharmButton key={charm.id} charm={charm} selected={charm.id === effectiveCharm} onPick={pickCharm} />
+                  ))}
+                </div>
+              )
+            ) : (
+              /* Categorised view */
+              CHARM_CATEGORIES.map((cat) => (
+                <div key={cat.label} className="mb-4">
+                  <p style={{
+                    fontFamily: "var(--font-sans)",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    color: "var(--ink-faint)",
+                    marginBottom: 6,
+                  }}>
+                    {cat.label}
+                  </p>
+                  <div className="grid" style={{ gridTemplateColumns: "repeat(5, 1fr)", gap: 6 }}>
+                    {cat.ids.map((id) => {
+                      const charm = CHARMS[id];
+                      return <CharmButton key={id} charm={charm} selected={id === effectiveCharm} onPick={pickCharm} />;
+                    })}
+                  </div>
+                </div>
+              ))
             )}
           </div>
 
@@ -254,5 +260,34 @@ export default function AddEventModal({ defaultDate, onSave, onClose }: AddEvent
         </div>
       </div>
     </div>
+  );
+}
+
+function CharmButton({ charm, selected, onPick }: { charm: Charm; selected: boolean; onPick: (id: CharmId) => void }) {
+  return (
+    <button
+      onClick={() => onPick(charm.id)}
+      title={charm.label}
+      className="flex flex-col items-center rounded-xl py-2 px-1 transition-all"
+      style={{
+        background: selected ? "rgba(221,130,38,0.15)" : "transparent",
+        outline: selected ? "2px solid var(--accent)" : "2px solid transparent",
+        outlineOffset: 1,
+        gap: 4,
+      }}
+    >
+      <CharmIcon charmId={charm.id} size={40} />
+      <span style={{
+        fontFamily: "var(--font-sans)",
+        fontSize: 10,
+        color: selected ? "var(--accent)" : "var(--ink-muted)",
+        lineHeight: 1.2,
+        textAlign: "center",
+        wordBreak: "break-word",
+        width: "100%",
+      }}>
+        {charm.label}
+      </span>
+    </button>
   );
 }

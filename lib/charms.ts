@@ -140,6 +140,19 @@ export const CHARMS: Record<CharmId, Charm> = {
 
 export const CHARM_LIST: Charm[] = Object.values(CHARMS);
 
+export const CHARM_CATEGORIES: { label: string; ids: CharmId[] }[] = [
+  { label: "Food & Drinks",      ids: ["coffee", "tea", "wine-glasses", "cake", "muffins", "cooking-pot", "garlic-pot", "ratatouille", "butter", "flour", "mixer", "popcorn-movie", "candles"] },
+  { label: "Travel & Outdoors",  ids: ["plane", "paper-plane", "travel-bag", "travel-van", "travel-van-2", "beach", "mountains", "camping-tent", "boat", "extra-sun"] },
+  { label: "Sports & Fitness",   ids: ["running-shoes", "dumbbells", "gym-bag", "yoga", "tennis", "basketball", "baseball", "football", "soccer-ball", "shuttlecock", "rollerblade", "trophy"] },
+  { label: "Celebrations",       ids: ["balloons", "confetti", "presents", "graduation-cap", "wedding-rings"] },
+  { label: "Arts & Creativity",  ids: ["arts-and-crafts", "painting", "sewing", "film-camera"] },
+  { label: "Social",             ids: ["friends", "disco-ball"] },
+  { label: "Nature & Seasons",   ids: ["flowers", "extra-flower-1", "extra-flower-2", "extra-flower-3", "extra-flower-4", "extra-leaf", "extra-leaf-2", "extra-leaf-3", "extra-snowflake", "extra-moon"] },
+  { label: "Home & Pets",        ids: ["house-keys", "baby", "cat", "dog"] },
+  { label: "Wellness",           ids: ["spa"] },
+  { label: "Special",            ids: ["extra-star", "extra-heart"] },
+];
+
 /** Legacy id map — for migrating old localStorage events */
 const LEGACY_MAP: Record<string, CharmId> = {
   coffee:  "coffee",

@@ -39,7 +39,7 @@ export function getDaysInMonth(iso: string): string[] {
 
 export function formatMonthYear(iso: string): string {
   const d = new Date(iso + "T12:00:00");
-  return d.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  return d.toLocaleDateString("en-US", { month: "long", year: "numeric" }).toUpperCase();
 }
 
 export function formatDayHeader(iso: string): { weekday: string; day: string } {
