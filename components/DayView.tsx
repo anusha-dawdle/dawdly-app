@@ -39,7 +39,7 @@ export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEv
 
       {/* Header */}
       <div className="flex-shrink-0 px-8 pt-5 pb-4" style={{ borderBottom: "1.5px dashed rgba(180,140,90,0.3)" }}>
-        <p style={{ fontFamily: "var(--font-hand)", fontSize: 15, color: "var(--ink-muted)" }}>
+        <p style={{ fontFamily: "var(--font-hand)", fontSize: 26, color: "var(--accent)" }}>
           {monthLabel}
         </p>
         <div className="flex items-baseline gap-3 mt-0.5">
