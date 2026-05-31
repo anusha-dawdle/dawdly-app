@@ -84,7 +84,7 @@ export default function DawdlyApp() {
           <span style={{ fontFamily: "var(--font-serif)", fontSize: 26, fontWeight: 700, color: "var(--accent)", letterSpacing: "-0.01em" }}>
             dawdly
           </span>
-          <span style={{ color: "var(--marker)", fontSize: 16 }}>✦</span>
+          <span style={{ color: "var(--marker)", fontSize: 24 }}>✦</span>
         </div>
 
         {/* View switcher */}
