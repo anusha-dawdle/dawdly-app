@@ -249,7 +249,7 @@ function WeekEventCard({
           fontSize: 13,
           color: ink,
           lineHeight: 1.2,
-          marginTop: -14,
+          marginTop: 4,
           display: "-webkit-box",
           WebkitLineClamp: 2,
           WebkitBoxOrient: "vertical",

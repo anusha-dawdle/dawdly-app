@@ -27,7 +27,7 @@ export default function CharmIcon({
         src={src}
         alt={charm.label}
         fill
-        style={{ objectFit: "contain" }}
+        style={{ objectFit: "contain", objectPosition: "bottom" }}
         sizes={`${size}px`}
         priority={false}
       />
