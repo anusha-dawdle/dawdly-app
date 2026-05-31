@@ -139,7 +139,7 @@ function DayEventCard({ event, onDelete, onClick }: { event: DawdlyEvent; onDele
           <p style={{
             fontFamily: "var(--font-hand)",
             fontSize: 15,
-            color: "#5B6E7A",
+            color: "var(--accent)",
             lineHeight: 1.3,
           }}>
             {event.title}

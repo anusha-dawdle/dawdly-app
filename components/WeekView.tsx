@@ -257,7 +257,7 @@ function WorkEventRow({
       style={{
         paddingTop: 3,
         paddingBottom: 3,
-        marginTop: 6,
+        marginTop: 12,
         marginBottom: 2,
       }}
     >
@@ -265,7 +265,7 @@ function WorkEventRow({
         style={{
           fontFamily: "var(--font-hand)",
           fontSize: 13,
-          color: "#5B6E7A",
+          color: "var(--accent)",
           lineHeight: 1.3,
           textAlign: "center",
           overflow: "hidden",
