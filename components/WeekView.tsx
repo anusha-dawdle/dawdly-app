@@ -56,10 +56,11 @@ export default function WeekView({
       {/* Month heading */}
       <div className="flex-shrink-0 text-center pt-4 pb-1">
         <span style={{
-          fontFamily: "var(--font-hand)",
+          fontFamily: "var(--font-sans)",
           fontSize: 26,
+          fontWeight: 600,
           color: "var(--accent)",
-          letterSpacing: "0.01em",
+          letterSpacing: "0.04em",
         }}>
           {formatMonthYear(days[0])}
         </span>
