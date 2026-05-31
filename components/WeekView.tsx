@@ -255,19 +255,19 @@ function WorkEventRow({
       className="group relative w-full cursor-pointer"
       onClick={() => onClick(event)}
       style={{
-        borderLeft: "2px solid rgba(120,110,100,0.3)",
+        borderLeft: "2px solid rgba(91,110,122,0.45)",
         paddingLeft: 5,
-        paddingTop: 2,
-        paddingBottom: 2,
-        marginTop: 3,
+        paddingTop: 3,
+        paddingBottom: 3,
+        marginTop: 6,
+        marginBottom: 2,
       }}
     >
       <p
         style={{
-          fontFamily: "var(--font-sans)",
-          fontSize: 11,
-          fontWeight: 500,
-          color: "var(--ink)",
+          fontFamily: "var(--font-hand)",
+          fontSize: 13,
+          color: "#5B6E7A",
           lineHeight: 1.3,
           overflow: "hidden",
           display: "-webkit-box",
@@ -278,7 +278,7 @@ function WorkEventRow({
         {event.title}
       </p>
       {event.startTime && (
-        <p style={{ fontFamily: "var(--font-hand)", fontSize: 10, color: "var(--ink-faint)", marginTop: 1 }}>
+        <p style={{ fontFamily: "var(--font-hand)", fontSize: 11, color: "#8BA0AB", marginTop: 1 }}>
           {formatTime(event.startTime)}
         </p>
       )}
