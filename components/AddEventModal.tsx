@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import type { DawdlyEvent } from "@/lib/types";
-import { CHARM_LIST, CHARM_CATEGORIES, CHARMS, DEFAULT_CHARM_ID, suggestCharm, type CharmId, type Charm } from "@/lib/charms";
+import { CHARM_LIST, CHARM_CATEGORIES, CHARMS, DEFAULT_CHARM_ID, pickExtraCharm, suggestCharm, type CharmId, type Charm } from "@/lib/charms";
 import CharmIcon from "./CharmIcon";
 
 interface AddEventModalProps {
@@ -39,14 +39,9 @@ export default function AddEventModal({ defaultDate, onSave, onClose }: AddEvent
 
   function handleSave() {
     if (!title.trim()) return;
-    onSave({
-      id: crypto.randomUUID(),
-      title: title.trim(),
-      charmId: effectiveCharm,
-      date,
-      startTime: startTime || undefined,
-      note: note.trim() || undefined,
-    });
+    const id = crypto.randomUUID();
+    const charmId = userPickedCharm ? selectedCharm : (suggested ?? pickExtraCharm(id));
+    onSave({ id, title: title.trim(), charmId, date, startTime: startTime || undefined, note: note.trim() || undefined });
     onClose();
   }
 
