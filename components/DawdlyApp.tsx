@@ -117,7 +117,7 @@ export default function DawdlyApp() {
           {/* Charm size control — week and day only */}
           {view === "week" && (
             <div className="flex items-center gap-1 rounded-xl px-2" style={{ background: "rgba(180,140,90,0.12)" }}>
-              <span style={{ fontFamily: "var(--font-hand)", fontSize: 13, color: "var(--ink-muted)", userSelect: "none" }}>charm size</span>
+              <span style={{ fontFamily: "var(--font-hand)", fontSize: 15, color: "var(--ink-muted)", userSelect: "none" }}>charm size</span>
               <button
                 onClick={decrease}
                 disabled={atMin}
