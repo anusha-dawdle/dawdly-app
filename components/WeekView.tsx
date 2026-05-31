@@ -104,8 +104,7 @@ export default function WeekView({
                     fontFamily: "var(--font-sans)",
                     fontSize: 12,
                     fontWeight: 600,
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
+                    letterSpacing: "0.04em",
                     color: todayDay ? "var(--accent)" : "var(--ink-faint)",
                   }}>
                     {weekday}
@@ -229,11 +228,9 @@ function WeekEventCard({
 }) {
   return (
     <div
-      className="group relative flex flex-col items-center rounded-xl pb-2 pt-2 px-1 w-full"
+      className="group relative flex flex-col items-center pb-2 pt-2 px-1 w-full"
       style={{
-        background: bg,
         transform: `rotate(${deg}deg)`,
-        boxShadow: "0 2px 8px rgba(74,61,49,0.12), 0 1px 3px rgba(74,61,49,0.08)",
         maxWidth: 130,
       }}
     >

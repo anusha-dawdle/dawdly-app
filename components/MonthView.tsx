@@ -9,7 +9,7 @@ import {
 } from "@/lib/dates";
 import CharmIcon from "./CharmIcon";
 
-const WEEKDAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const WEEKDAY_LABELS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 
 interface MonthViewProps {
   anchor: string;

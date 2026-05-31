@@ -164,8 +164,7 @@ export default function AddEventModal({ defaultDate, onSave, onClose }: AddEvent
                     fontFamily: "var(--font-sans)",
                     fontSize: 11,
                     fontWeight: 600,
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
+                    letterSpacing: "0.04em",
                     color: "var(--ink-faint)",
                     marginBottom: 6,
                   }}>
