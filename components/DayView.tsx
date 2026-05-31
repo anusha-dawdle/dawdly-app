@@ -137,16 +137,15 @@ function DayEventCard({ event, onDelete, onClick }: { event: DawdlyEvent; onDele
       >
         <div className="flex-1 min-w-0">
           <p style={{
-            fontFamily: "var(--font-sans)",
+            fontFamily: "var(--font-hand)",
             fontSize: 15,
-            fontWeight: 500,
-            color: "var(--ink)",
+            color: "#5B6E7A",
             lineHeight: 1.3,
           }}>
             {event.title}
           </p>
           {event.startTime && (
-            <p style={{ fontFamily: "var(--font-hand)", fontSize: 13, color: "var(--ink-faint)", marginTop: 2 }}>
+            <p style={{ fontFamily: "var(--font-hand)", fontSize: 13, color: "#8BA0AB", marginTop: 2 }}>
               {formatTime(event.startTime)}
             </p>
           )}

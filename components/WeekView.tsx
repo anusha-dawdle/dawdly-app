@@ -255,8 +255,6 @@ function WorkEventRow({
       className="group relative w-full cursor-pointer"
       onClick={() => onClick(event)}
       style={{
-        borderLeft: "2px solid rgba(91,110,122,0.45)",
-        paddingLeft: 5,
         paddingTop: 3,
         paddingBottom: 3,
         marginTop: 6,
