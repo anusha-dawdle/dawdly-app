@@ -95,7 +95,7 @@ export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEv
           const hasBoth = personalEvents.length > 0 && workEvents.length > 0;
 
           return (
-            <div className="flex flex-col gap-4 max-w-2xl mx-auto w-full">
+            <div className="flex flex-col gap-4 w-full">
               {hasBoth ? (
                 <div className="flex gap-5 items-start">
                   {/* Personal column */}
@@ -122,7 +122,7 @@ export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEv
                   </div>
                 </div>
               ) : (
-                <div className="flex flex-col gap-4 max-w-lg mx-auto w-full">
+                <div className="flex flex-col gap-4 w-full">
                   {events.map((event) => (
                     <DayEventCard key={event.id} event={event} onDelete={onDeleteEvent} onClick={onEventClick} />
                   ))}
