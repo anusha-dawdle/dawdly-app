@@ -49,10 +49,10 @@ export default function WeekView({
     .slice(0, 12);
 
   return (
-    <div className="flex flex-col h-full" style={{ background: "var(--paper)" }}>
+    <div className="h-full overflow-y-auto" style={{ background: "var(--paper)" }}>
 
       {/* Month heading */}
-      <div className="text-center pt-4 pb-1 flex-shrink-0">
+      <div className="text-center pt-4 pb-1">
         <span style={{
           fontFamily: "var(--font-hand)",
           fontSize: 26,
@@ -63,8 +63,8 @@ export default function WeekView({
         </span>
       </div>
 
-      {/* Day columns */}
-      <div className="flex flex-1 px-3 pb-2 overflow-hidden" style={{ minHeight: 0 }}>
+      {/* Day columns — grow naturally, no per-column scroll */}
+      <div className="flex px-3 pb-2">
         {days.map((day, i) => {
           const { weekday, day: dayNum } = formatDayHeader(day);
           const dayEvents = getEventsForDate(day);
@@ -116,8 +116,8 @@ export default function WeekView({
                   </span>
                 </button>
 
-                {/* Events as scrapbook cards */}
-                <div className="flex-1 flex flex-col gap-0 px-0.5 pb-1 overflow-y-auto items-center">
+                {/* Events */}
+                <div className="flex flex-col gap-0 px-0.5 pb-1 items-center">
                   {dayEvents.length === 0 && (
                     <button
                       onClick={() => onDayClick(day)}
@@ -128,6 +128,7 @@ export default function WeekView({
                     </button>
                   )}
                   {dayEvents.map((event, idx) => {
+                    const prevIsWork = idx > 0 && dayEvents[idx - 1].kind === "work";
                     if (event.kind === "work") {
                       return (
                         <WorkEventRow
@@ -149,7 +150,8 @@ export default function WeekView({
                         onClick={onEventClick}
                         onAdd={() => onDayClick(day)}
                         iconSize={160}
-                        overlap={idx > 0}
+                        overlap={idx > 0 && !prevIsWork}
+                        afterWork={prevIsWork}
                         zIndex={dayEvents.length - idx}
                       />
                     );
@@ -171,7 +173,7 @@ export default function WeekView({
       </div>
 
       {/* On the horizon */}
-      <div className="flex-shrink-0" style={{ borderTop: "1.5px dashed rgba(180,140,90,0.3)" }}>
+      <div style={{ borderTop: "1.5px dashed rgba(180,140,90,0.3)" }}>
         {horizonEvents.length > 0 ? (
           <div className="px-5 pt-3 pb-4">
             <p style={{
@@ -196,7 +198,7 @@ export default function WeekView({
                       }}
                     >
                       <div className="flex flex-col">
-                        <span style={{ fontFamily: "var(--font-sans)", fontSize: 12, fontWeight: 500, color: "var(--ink)", whiteSpace: "nowrap" }}>
+                        <span style={{ fontFamily: "var(--font-hand)", fontSize: 12, fontWeight: 500, color: "var(--ink)", whiteSpace: "nowrap" }}>
                           {event.title}
                         </span>
                         <span style={{ fontFamily: "var(--font-hand)", fontSize: 12, color: "var(--ink-faint)", whiteSpace: "nowrap" }}>
@@ -257,8 +259,8 @@ function WorkEventRow({
       style={{
         paddingTop: 3,
         paddingBottom: 3,
-        marginTop: 18,
-        marginBottom: 2,
+        marginTop: 4,
+        marginBottom: 18,
       }}
     >
       <p
@@ -277,7 +279,7 @@ function WorkEventRow({
         {event.title}
       </p>
       {event.startTime && (
-        <p style={{ fontFamily: "var(--font-hand)", fontSize: 11, color: "#8BA0AB", marginTop: 1, textAlign: "center" }}>
+        <p style={{ fontFamily: "var(--font-hand)", fontSize: 11, color: "var(--ink-faint)", marginTop: 1, textAlign: "center" }}>
           {formatTime(event.startTime)}
         </p>
       )}
@@ -301,6 +303,7 @@ function WeekEventCard({
   onClick,
   iconSize = 160,
   overlap = false,
+  afterWork = false,
   zIndex = 1,
 }: {
   event: DawdlyEvent;
@@ -311,14 +314,17 @@ function WeekEventCard({
   onAdd: () => void;
   iconSize?: number;
   overlap?: boolean;
+  afterWork?: boolean;
   zIndex?: number;
 }) {
+  const topMargin = afterWork ? 4 : overlap ? -16 : 4;
+
   return (
     <div
       className="group relative flex flex-col items-center w-full cursor-pointer"
       onClick={() => onClick(event)}
       style={{
-        marginTop: overlap ? -16 : 4,
+        marginTop: topMargin,
         paddingBottom: 2,
         position: "relative",
         zIndex,
