@@ -128,6 +128,16 @@ export default function WeekView({
                     </button>
                   )}
                   {dayEvents.map((event, idx) => {
+                    if (event.kind === "work") {
+                      return (
+                        <WorkEventRow
+                          key={event.id}
+                          event={event}
+                          onDelete={onDeleteEvent}
+                          onClick={onEventClick}
+                        />
+                      );
+                    }
                     const col = cardColor(event.id);
                     return (
                       <WeekEventCard
@@ -175,6 +185,27 @@ export default function WeekView({
             </p>
             <div className="flex gap-2 overflow-x-auto pb-1">
               {horizonEvents.map((event) => {
+                if (event.kind === "work") {
+                  return (
+                    <div
+                      key={event.id}
+                      className="flex items-center gap-2 rounded-xl px-3 py-1.5 flex-shrink-0"
+                      style={{
+                        borderLeft: "3px solid rgba(120,110,100,0.35)",
+                        background: "rgba(180,140,90,0.06)",
+                      }}
+                    >
+                      <div className="flex flex-col">
+                        <span style={{ fontFamily: "var(--font-sans)", fontSize: 12, fontWeight: 500, color: "var(--ink)", whiteSpace: "nowrap" }}>
+                          {event.title}
+                        </span>
+                        <span style={{ fontFamily: "var(--font-hand)", fontSize: 12, color: "var(--ink-faint)", whiteSpace: "nowrap" }}>
+                          {relativeDate(event.date)}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                }
                 const col = cardColor(event.id);
                 return (
                   <div
@@ -206,6 +237,59 @@ export default function WeekView({
         )}
       </div>
 
+    </div>
+  );
+}
+
+function WorkEventRow({
+  event,
+  onDelete,
+  onClick,
+}: {
+  event: DawdlyEvent;
+  onDelete: (id: string) => void;
+  onClick: (event: DawdlyEvent) => void;
+}) {
+  return (
+    <div
+      className="group relative w-full cursor-pointer"
+      onClick={() => onClick(event)}
+      style={{
+        borderLeft: "2px solid rgba(120,110,100,0.3)",
+        paddingLeft: 5,
+        paddingTop: 2,
+        paddingBottom: 2,
+        marginTop: 3,
+      }}
+    >
+      <p
+        style={{
+          fontFamily: "var(--font-sans)",
+          fontSize: 11,
+          fontWeight: 500,
+          color: "var(--ink)",
+          lineHeight: 1.3,
+          overflow: "hidden",
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
+        }}
+      >
+        {event.title}
+      </p>
+      {event.startTime && (
+        <p style={{ fontFamily: "var(--font-hand)", fontSize: 10, color: "var(--ink-faint)", marginTop: 1 }}>
+          {formatTime(event.startTime)}
+        </p>
+      )}
+      <button
+        onClick={(e) => { e.stopPropagation(); onDelete(event.id); }}
+        className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity rounded-full w-4 h-4 flex items-center justify-center"
+        style={{ background: "rgba(74,61,49,0.1)", color: "var(--ink-faint)", fontSize: 11 }}
+        title="Remove"
+      >
+        ×
+      </button>
     </div>
   );
 }

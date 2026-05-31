@@ -11,6 +11,12 @@ import CharmIcon from "./CharmIcon";
 
 const WEEKDAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+function formatTime(t: string): string {
+  const [h, m] = t.split(":").map(Number);
+  const period = h >= 12 ? "pm" : "am";
+  return `${h % 12 || 12}:${String(m).padStart(2, "0")} ${period}`;
+}
+
 interface MonthViewProps {
   anchor: string;
   getEventsForDate: (date: string) => DawdlyEvent[];
@@ -123,11 +129,34 @@ export default function MonthView({ anchor, getEventsForDate, onDayClick }: Mont
                 {dayNum}
               </span>
 
-              {/* Charm icons only */}
-              <div className="flex flex-wrap gap-0.5">
-                {visible.map((event) => (
-                  <CharmIcon key={event.id} charmId={event.charmId} size={64} />
-                ))}
+              {/* Event indicators */}
+              <div className="flex flex-col gap-0.5 w-full">
+                {visible.map((event) =>
+                  event.kind === "work" ? (
+                    <div
+                      key={event.id}
+                      className="flex items-center gap-1 w-full"
+                      style={{ borderLeft: "2px solid rgba(120,110,100,0.3)", paddingLeft: 3 }}
+                    >
+                      <span style={{
+                        fontFamily: "var(--font-sans)",
+                        fontSize: 10,
+                        fontWeight: 500,
+                        color: "var(--ink-muted)",
+                        lineHeight: 1.2,
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                        display: "block",
+                        maxWidth: "100%",
+                      }}>
+                        {event.startTime ? `${formatTime(event.startTime)} ` : ""}{event.title}
+                      </span>
+                    </div>
+                  ) : (
+                    <CharmIcon key={event.id} charmId={event.charmId} size={64} />
+                  )
+                )}
                 {overflow > 0 && (
                   <span className="flex items-center" style={{ fontFamily: "var(--font-hand)", fontSize: 11, color: "var(--ink-faint)" }}>
                     +{overflow}

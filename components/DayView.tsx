@@ -120,6 +120,61 @@ export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEv
 }
 
 function DayEventCard({ event, onDelete, onClick }: { event: DawdlyEvent; onDelete: (id: string) => void; onClick: (event: DawdlyEvent) => void }) {
+  const isWork = event.kind === "work";
+
+  if (isWork) {
+    return (
+      <div
+        className="group relative flex items-start gap-3 cursor-pointer rounded-r-xl"
+        onClick={() => onClick(event)}
+        style={{
+          borderLeft: "3px solid rgba(120,110,100,0.35)",
+          paddingLeft: 12,
+          paddingTop: 6,
+          paddingBottom: 6,
+          paddingRight: 28,
+        }}
+      >
+        <div className="flex-1 min-w-0">
+          <p style={{
+            fontFamily: "var(--font-sans)",
+            fontSize: 15,
+            fontWeight: 500,
+            color: "var(--ink)",
+            lineHeight: 1.3,
+          }}>
+            {event.title}
+          </p>
+          {event.startTime && (
+            <p style={{ fontFamily: "var(--font-hand)", fontSize: 13, color: "var(--ink-faint)", marginTop: 2 }}>
+              {formatTime(event.startTime)}
+            </p>
+          )}
+          {event.note && (
+            <p style={{
+              fontFamily: "var(--font-hand)",
+              fontSize: 13,
+              color: "var(--ink-muted)",
+              fontStyle: "italic",
+              marginTop: 3,
+              lineHeight: 1.35,
+            }}>
+              {event.note}
+            </p>
+          )}
+        </div>
+        <button
+          onClick={(e) => { e.stopPropagation(); onDelete(event.id); }}
+          className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity rounded-full w-5 h-5 flex items-center justify-center"
+          style={{ background: "rgba(74,61,49,0.08)", color: "var(--ink-faint)", fontSize: 13 }}
+          title="Remove"
+        >
+          ×
+        </button>
+      </div>
+    );
+  }
+
   const col = cardColor(event.id);
 
   return (
