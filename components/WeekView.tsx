@@ -131,7 +131,7 @@ export default function WeekView({
                       + add
                     </button>
                   )}
-                  {dayEvents.map((event) => {
+                  {dayEvents.map((event, idx) => {
                     const deg = tilt(event.id);
                     const col = cardColor(event.id);
                     return (
@@ -144,6 +144,7 @@ export default function WeekView({
                         onDelete={onDeleteEvent}
                         onAdd={() => onDayClick(day)}
                         iconSize={160}
+                        overlap={idx > 0}
                       />
                     );
                   })}
@@ -220,6 +221,7 @@ function WeekEventCard({
   ink,
   onDelete,
   iconSize = 160,
+  overlap = false,
 }: {
   event: DawdlyEvent;
   deg: number;
@@ -228,13 +230,14 @@ function WeekEventCard({
   onDelete: (id: string) => void;
   onAdd: () => void;
   iconSize?: number;
+  overlap?: boolean;
 }) {
   return (
     <div
       className="group relative flex flex-col items-center w-full"
       style={{
         transform: `rotate(${deg}deg)`,
-        paddingTop: 6,
+        marginTop: overlap ? -48 : 4,
         paddingBottom: 2,
       }}
     >
