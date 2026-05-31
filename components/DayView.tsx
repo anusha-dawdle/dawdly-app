@@ -139,13 +139,13 @@ function DayEventCard({ event, onDelete, onClick }: { event: DawdlyEvent; onDele
           <p style={{
             fontFamily: "var(--font-hand)",
             fontSize: 15,
-            color: "var(--accent)",
+            color: "var(--ink)",
             lineHeight: 1.3,
           }}>
             {event.title}
           </p>
           {event.startTime && (
-            <p style={{ fontFamily: "var(--font-hand)", fontSize: 13, color: "#8BA0AB", marginTop: 2 }}>
+            <p style={{ fontFamily: "var(--font-hand)", fontSize: 13, color: "var(--ink-faint)", marginTop: 2 }}>
               {formatTime(event.startTime)}
             </p>
           )}
@@ -193,7 +193,7 @@ function DayEventCard({ event, onDelete, onClick }: { event: DawdlyEvent; onDele
           fontFamily: "var(--font-serif)",
           fontSize: 20,
           fontWeight: 600,
-          color: col.ink,
+          color: "var(--accent)",
           lineHeight: 1.2,
         }}>
           {event.title}

@@ -257,7 +257,7 @@ function WorkEventRow({
       style={{
         paddingTop: 3,
         paddingBottom: 3,
-        marginTop: 12,
+        marginTop: 18,
         marginBottom: 2,
       }}
     >
@@ -265,7 +265,7 @@ function WorkEventRow({
         style={{
           fontFamily: "var(--font-hand)",
           fontSize: 13,
-          color: "var(--accent)",
+          color: "var(--ink)",
           lineHeight: 1.3,
           textAlign: "center",
           overflow: "hidden",
@@ -330,7 +330,7 @@ function WeekEventCard({
         style={{
           fontFamily: "var(--font-hand)",
           fontSize: 13,
-          color: ink,
+          color: "var(--accent)",
           lineHeight: 1.2,
           marginTop: 4,
           display: "-webkit-box",
