@@ -24,7 +24,7 @@
 
   --font-serif:       Georgia, serif;
   --font-hand:        Georgia, serif;
-  --font-sans:        Georgia, serif;
+  --font-sans:        var(--font-geist-sans), system-ui, sans-serif;
 }
 
 /* ─── Base ───────────────────────────────────────────────── */
