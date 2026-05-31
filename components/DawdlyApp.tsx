@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { CalendarView } from "@/lib/types";
 import { useEvents, useCharmSize } from "@/lib/store";
+import { useBreakpoint } from "@/lib/breakpoint";
 import { today, addDays, getWeekDays, startOfMonth } from "@/lib/dates";
 import WeekView from "./WeekView";
 import MonthView from "./MonthView";
@@ -14,11 +15,12 @@ export default function DawdlyApp() {
   const [anchor, setAnchor] = useState(today());
   const [showModal, setShowModal] = useState(false);
   const [modalDate, setModalDate] = useState(today());
-
   const [editingEvent, setEditingEvent] = useState<import("@/lib/types").DawdlyEvent | null>(null);
 
   const { events, addEvent, deleteEvent, updateEvent, getEventsForDate } = useEvents();
   const { charmSize, increase, decrease, atMin, atMax } = useCharmSize();
+  const breakpoint = useBreakpoint();
+  const isMobile = breakpoint === "mobile";
 
   function openAddModal(date: string) {
     setEditingEvent(null);
@@ -37,8 +39,10 @@ export default function DawdlyApp() {
     else addEvent(event);
   }
 
+  const weekStep = isMobile ? 3 : 7;
+
   function handlePrev() {
-    if (view === "week") setAnchor((a) => addDays(a, -7));
+    if (view === "week") setAnchor((a) => addDays(a, -weekStep));
     else if (view === "month")
       setAnchor((a) => {
         const [y, m] = a.split("-").map(Number);
@@ -49,7 +53,7 @@ export default function DawdlyApp() {
   }
 
   function handleNext() {
-    if (view === "week") setAnchor((a) => addDays(a, 7));
+    if (view === "week") setAnchor((a) => addDays(a, weekStep));
     else if (view === "month")
       setAnchor((a) => {
         const [y, m] = a.split("-").map(Number);
@@ -59,9 +63,7 @@ export default function DawdlyApp() {
     else setAnchor((a) => addDays(a, 1));
   }
 
-  function handleToday() {
-    setAnchor(today());
-  }
+  function handleToday() { setAnchor(today()); }
 
   function handleDayClick(date: string) {
     if (view === "month") {
@@ -73,75 +75,59 @@ export default function DawdlyApp() {
   }
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden" style={{ background: "var(--paper)" }}>
+    <div className="flex flex-col h-screen overflow-hidden" style={{ background: "var(--paper)", minWidth: isMobile ? 320 : breakpoint === "tablet" ? 600 : 900 }}>
+
       {/* Header */}
       <header
-        className="grid grid-cols-3 items-center px-6 py-3 flex-shrink-0"
+        className="flex-shrink-0 px-4 py-3 flex items-center justify-between gap-2"
         style={{ borderBottom: "1.5px dashed rgba(180,140,90,0.3)" }}
       >
         {/* Wordmark */}
-        <div className="flex items-center gap-1.5">
-          <span style={{ fontFamily: "var(--font-serif)", fontSize: 26, fontWeight: 700, color: "var(--accent)", letterSpacing: "-0.01em" }}>
+        <div className="flex items-center gap-1.5 flex-shrink-0">
+          <span style={{ fontFamily: "var(--font-serif)", fontSize: isMobile ? 22 : 26, fontWeight: 700, color: "var(--accent)", letterSpacing: "-0.01em" }}>
             dawdly
           </span>
-          <span style={{ color: "var(--marker)", fontSize: 24 }}>✦</span>
+          <span style={{ color: "var(--marker)", fontSize: isMobile ? 18 : 24 }}>✦</span>
         </div>
 
-        {/* View switcher */}
-        <div className="flex justify-center">
-          <div
-            className="flex rounded-xl overflow-hidden"
-            style={{ background: "rgba(180,140,90,0.12)", padding: 2 }}
-          >
-            {(["day", "week", "month"] as CalendarView[]).map((v) => (
-              <button
-                key={v}
-                onClick={() => setView(v)}
-                className="px-4 py-1.5 rounded-lg transition-colors"
-                style={{
-                  fontFamily: "var(--font-hand)",
-                  fontSize: 15,
-                  background: view === v ? "var(--paper)" : "transparent",
-                  color: view === v ? "var(--accent)" : "var(--ink-muted)",
-                  boxShadow: view === v ? "0 1px 4px rgba(74,61,49,0.1)" : "none",
-                }}
-              >
-                {v}
-              </button>
-            ))}
+        {/* View switcher — hidden on mobile (bottom nav instead) */}
+        {!isMobile && (
+          <div className="flex justify-center flex-1">
+            <div className="flex rounded-xl overflow-hidden" style={{ background: "rgba(180,140,90,0.12)", padding: 2 }}>
+              {(["day", "week", "month"] as CalendarView[]).map((v) => (
+                <button
+                  key={v}
+                  onClick={() => setView(v)}
+                  className="px-4 py-1.5 rounded-lg transition-colors"
+                  style={{
+                    fontFamily: "var(--font-hand)",
+                    fontSize: 15,
+                    background: view === v ? "var(--paper)" : "transparent",
+                    color: view === v ? "var(--accent)" : "var(--ink-muted)",
+                    boxShadow: view === v ? "0 1px 4px rgba(74,61,49,0.1)" : "none",
+                  }}
+                >
+                  {v}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* Nav + add */}
-        <div className="flex items-center gap-2 justify-end">
-          {/* Charm size control — week and day only */}
-          {view === "week" && (
+        {/* Nav controls */}
+        <div className="flex items-center gap-1.5 flex-shrink-0">
+          {/* Charm size — desktop week only */}
+          {!isMobile && view === "week" && (
             <div className="flex items-center gap-1 rounded-xl px-2" style={{ background: "rgba(180,140,90,0.12)" }}>
               <span style={{ fontFamily: "var(--font-hand)", fontSize: 15, color: "var(--ink-muted)", userSelect: "none" }}>charm size</span>
-              <button
-                onClick={decrease}
-                disabled={atMin}
-                className="w-7 h-8 flex items-center justify-center transition-opacity"
-                style={{ fontSize: 18, color: atMin ? "var(--ink-faint)" : "var(--ink-muted)", fontFamily: "var(--font-sans)" }}
-                title="Smaller charms"
-              >
-                −
-              </button>
-              <button
-                onClick={increase}
-                disabled={atMax}
-                className="w-7 h-8 flex items-center justify-center transition-opacity"
-                style={{ fontSize: 18, color: atMax ? "var(--ink-faint)" : "var(--ink-muted)", fontFamily: "var(--font-sans)" }}
-                title="Larger charms"
-              >
-                +
-              </button>
+              <button onClick={decrease} disabled={atMin} className="w-7 h-8 flex items-center justify-center" style={{ fontSize: 18, color: atMin ? "var(--ink-faint)" : "var(--ink-muted)" }}>−</button>
+              <button onClick={increase} disabled={atMax} className="w-7 h-8 flex items-center justify-center" style={{ fontSize: 18, color: atMax ? "var(--ink-faint)" : "var(--ink-muted)" }}>+</button>
             </div>
           )}
           <button
             onClick={handleToday}
             className="px-3 py-1.5 rounded-xl"
-            style={{ fontFamily: "var(--font-hand)", fontSize: 15, background: "rgba(180,140,90,0.12)", color: "var(--ink-muted)" }}
+            style={{ fontFamily: "var(--font-hand)", fontSize: isMobile ? 13 : 15, background: "rgba(180,140,90,0.12)", color: "var(--ink-muted)" }}
           >
             today
           </button>
@@ -161,16 +147,16 @@ export default function DawdlyApp() {
           </button>
           <button
             onClick={() => openAddModal(anchor)}
-            className="px-4 py-1.5 rounded-xl transition-all"
-            style={{ fontFamily: "var(--font-hand)", fontSize: 15, fontWeight: 600, background: "var(--accent)", color: "#fff" }}
+            className="px-3 py-1.5 rounded-xl transition-all"
+            style={{ fontFamily: "var(--font-hand)", fontSize: isMobile ? 13 : 15, fontWeight: 600, background: "var(--accent)", color: "#fff" }}
           >
             + add
           </button>
         </div>
       </header>
 
-      {/* Calendar body */}
-      <main className="flex-1 overflow-hidden">
+      {/* Calendar body — bottom padding on mobile for nav bar */}
+      <main className="flex-1 overflow-hidden" style={{ paddingBottom: isMobile ? 56 : 0 }}>
         {view === "week" && (
           <WeekView
             anchor={anchor}
@@ -180,6 +166,7 @@ export default function DawdlyApp() {
             onDeleteEvent={deleteEvent}
             onEventClick={openEditModal}
             charmSize={charmSize}
+            breakpoint={breakpoint}
           />
         )}
         {view === "month" && (
@@ -187,6 +174,7 @@ export default function DawdlyApp() {
             anchor={anchor}
             getEventsForDate={getEventsForDate}
             onDayClick={handleDayClick}
+            breakpoint={breakpoint}
           />
         )}
         {view === "day" && (
@@ -196,9 +184,41 @@ export default function DawdlyApp() {
             onAddClick={() => openAddModal(anchor)}
             onDeleteEvent={deleteEvent}
             onEventClick={openEditModal}
+            breakpoint={breakpoint}
           />
         )}
       </main>
+
+      {/* Bottom nav — mobile only */}
+      {isMobile && (
+        <nav
+          className="fixed bottom-0 left-0 right-0 flex justify-around items-center"
+          style={{
+            height: 56,
+            background: "var(--paper)",
+            borderTop: "1.5px dashed rgba(180,140,90,0.3)",
+            zIndex: 40,
+          }}
+        >
+          {(["day", "week", "month"] as CalendarView[]).map((v) => (
+            <button
+              key={v}
+              onClick={() => setView(v)}
+              className="flex-1 flex flex-col items-center justify-center py-1 gap-0.5"
+              style={{
+                fontFamily: "var(--font-hand)",
+                fontSize: 13,
+                color: view === v ? "var(--accent)" : "var(--ink-faint)",
+              }}
+            >
+              <span style={{ fontSize: 18 }}>
+                {v === "day" ? "◦" : v === "week" ? "⊞" : "⊟"}
+              </span>
+              {v}
+            </button>
+          ))}
+        </nav>
+      )}
 
       {/* Modal */}
       {showModal && (

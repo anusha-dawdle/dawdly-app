@@ -1,6 +1,7 @@
 "use client";
 
 import type { DawdlyEvent } from "@/lib/types";
+import type { Breakpoint } from "@/lib/breakpoint";
 import { formatDayHeader, formatMonthYear, isToday, relativeDate, today } from "@/lib/dates";
 import CharmIcon from "./CharmIcon";
 
@@ -10,6 +11,7 @@ interface DayViewProps {
   onAddClick: () => void;
   onDeleteEvent: (id: string) => void;
   onEventClick: (event: DawdlyEvent) => void;
+  breakpoint: Breakpoint;
 }
 
 const CARD_COLORS = [
@@ -26,7 +28,8 @@ function cardColor(id: string) {
 }
 
 
-export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEvent, onEventClick }: DayViewProps) {
+export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEvent, onEventClick, breakpoint }: DayViewProps) {
+  const isMobile = breakpoint === "mobile";
   const { weekday, day } = formatDayHeader(date);
   const monthLabel = formatMonthYear(date);
   const events = getEventsForDate(date);
@@ -38,14 +41,17 @@ export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEv
     <div className="flex flex-col h-full" style={{ background: "var(--paper)" }}>
 
       {/* Header */}
-      <div className="flex-shrink-0 px-8 pt-5 pb-4" style={{ borderBottom: "1.5px dashed rgba(180,140,90,0.3)" }}>
-        <p style={{ fontFamily: "var(--font-hand)", fontSize: 26, color: "var(--accent)" }}>
+      <div
+        className="flex-shrink-0 pt-4 pb-3"
+        style={{ borderBottom: "1.5px dashed rgba(180,140,90,0.3)", paddingLeft: isMobile ? 20 : 32, paddingRight: isMobile ? 20 : 32 }}
+      >
+        <p style={{ fontFamily: "var(--font-hand)", fontSize: isMobile ? 18 : 26, color: "var(--accent)" }}>
           {monthLabel}
         </p>
         <div className="flex items-baseline gap-3 mt-0.5">
           <p style={{
             fontFamily: "var(--font-serif)",
-            fontSize: 72,
+            fontSize: isMobile ? 48 : 72,
             fontWeight: 700,
             lineHeight: 1,
             color: todayDay ? "var(--accent)" : "var(--ink)",
@@ -55,18 +61,18 @@ export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEv
           <div className="flex flex-col">
             <p style={{
               fontFamily: "var(--font-hand)",
-              fontSize: 22,
+              fontSize: isMobile ? 16 : 22,
               color: todayDay ? "var(--accent)" : "var(--ink-muted)",
             }}>
               {weekday}
             </p>
             {countdown && (
-              <p style={{ fontFamily: "var(--font-hand)", fontSize: 16, color: "var(--marker)", fontStyle: "italic" }}>
+              <p style={{ fontFamily: "var(--font-hand)", fontSize: isMobile ? 13 : 16, color: "var(--marker)", fontStyle: "italic" }}>
                 {countdown}
               </p>
             )}
             {todayDay && (
-              <p style={{ fontFamily: "var(--font-hand)", fontSize: 14, color: "var(--accent)", fontStyle: "italic" }}>
+              <p style={{ fontFamily: "var(--font-hand)", fontSize: isMobile ? 12 : 14, color: "var(--accent)", fontStyle: "italic" }}>
                 today ♡
               </p>
             )}
@@ -97,7 +103,7 @@ export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEv
           return (
             <div className="flex flex-col gap-4 w-full">
               {hasBoth ? (
-                <div className="flex gap-5 items-start">
+                <div className={isMobile ? "flex flex-col gap-4" : "flex gap-5 items-start"}>
                   {/* Personal column */}
                   <div className="flex-1 flex flex-col gap-4 min-w-0">
                     <p style={{ fontFamily: "var(--font-hand)", fontSize: 16, color: "var(--ink-muted)", fontStyle: "italic" }}>
@@ -108,8 +114,8 @@ export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEv
                     ))}
                   </div>
 
-                  {/* Dashed divider */}
-                  <div style={{ width: 1, alignSelf: "stretch", borderLeft: "1.5px dashed rgba(180,140,90,0.3)", flexShrink: 0 }} />
+                  {/* Dashed divider — desktop/tablet only */}
+                  {!isMobile && <div style={{ width: 1, alignSelf: "stretch", borderLeft: "1.5px dashed rgba(180,140,90,0.3)", flexShrink: 0 }} />}
 
                   {/* Work column */}
                   <div className="flex-1 flex flex-col gap-3 min-w-0">

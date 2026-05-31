@@ -1,12 +1,14 @@
 "use client";
 
 import type { DawdlyEvent } from "@/lib/types";
+import type { Breakpoint } from "@/lib/breakpoint";
 import {
   getWeekDays,
   formatDayHeader,
   isToday,
   formatMonthYear,
   relativeDate,
+  addDays,
 } from "@/lib/dates";
 import CharmIcon from "./CharmIcon";
 
@@ -18,6 +20,7 @@ interface WeekViewProps {
   onDeleteEvent: (id: string) => void;
   onEventClick: (event: DawdlyEvent) => void;
   charmSize: number;
+  breakpoint: Breakpoint;
 }
 
 
@@ -42,11 +45,20 @@ export default function WeekView({
   onDeleteEvent,
   onEventClick,
   charmSize,
+  breakpoint,
 }: WeekViewProps) {
-  const days = getWeekDays(anchor);
-  const weekEnd = days[6];
+  const isMobile = breakpoint === "mobile";
+
+  // Mobile: 3 days from anchor. Tablet/Desktop: full 7-day week.
+  const days = isMobile
+    ? [anchor, addDays(anchor, 1), addDays(anchor, 2)]
+    : getWeekDays(anchor);
+
+  const effectiveCharmSize = isMobile ? 80 : breakpoint === "tablet" ? 100 : charmSize;
+
+  const lastDay = days[days.length - 1];
   const horizonEvents = events
-    .filter((e) => e.date > weekEnd && e.kind !== "work")
+    .filter((e) => e.date > lastDay && e.kind !== "work")
     .sort((a, b) => a.date.localeCompare(b.date))
     .slice(0, 12);
 
@@ -152,7 +164,7 @@ export default function WeekView({
                         onDelete={onDeleteEvent}
                         onClick={onEventClick}
                         onAdd={() => onDayClick(day)}
-                        iconSize={charmSize}
+                        iconSize={effectiveCharmSize}
                         overlap={idx > 0 && !prevIsWork}
                         afterWork={prevIsWork}
                         zIndex={dayEvents.length - idx}
@@ -179,48 +191,33 @@ export default function WeekView({
       {/* On the horizon — pinned to bottom */}
       <div className="flex-shrink-0" style={{ borderTop: "1.5px dashed rgba(180,140,90,0.3)" }}>
         {horizonEvents.length > 0 ? (
-          <div className="px-5 pt-3 pb-4">
-            <p style={{
-              fontFamily: "var(--font-hand)",
-              fontSize: 17,
-              color: "var(--ink-muted)",
-              marginBottom: 8,
-              fontStyle: "italic",
-            }}>
-              on the horizon
-            </p>
+          <div style={{ paddingLeft: 20, paddingRight: 20, paddingTop: isMobile ? 8 : 12, paddingBottom: isMobile ? 8 : 16 }}>
+            {!isMobile && (
+              <p style={{ fontFamily: "var(--font-hand)", fontSize: 17, color: "var(--ink-muted)", marginBottom: 8, fontStyle: "italic" }}>
+                on the horizon
+              </p>
+            )}
             <div className="flex gap-2 overflow-x-auto pb-1">
               {horizonEvents.map((event) => {
-                if (event.kind === "work") {
+                const col = cardColor(event.id);
+                if (isMobile) {
+                  // Mobile: compact charm + date only
                   return (
-                    <div
-                      key={event.id}
-                      className="flex items-center gap-2 rounded-xl px-3 py-1.5 flex-shrink-0"
-                      style={{
-                        borderLeft: "3px solid rgba(120,110,100,0.35)",
-                        background: "rgba(180,140,90,0.06)",
-                      }}
-                    >
-                      <div className="flex flex-col">
-                        <span style={{ fontFamily: "var(--font-hand)", fontSize: 12, fontWeight: 500, color: "var(--ink)", whiteSpace: "nowrap" }}>
-                          {event.title}
-                        </span>
-                        <span style={{ fontFamily: "var(--font-hand)", fontSize: 12, color: "var(--ink-faint)", whiteSpace: "nowrap" }}>
-                          {relativeDate(event.date)}
-                        </span>
+                    <div key={event.id} className="flex flex-col items-center gap-0.5 flex-shrink-0">
+                      <div className="rounded-xl p-1" style={{ background: col.bg }}>
+                        <CharmIcon charmId={event.charmId} size={32} />
                       </div>
+                      <span style={{ fontFamily: "var(--font-hand)", fontSize: 10, color: "var(--ink-faint)", whiteSpace: "nowrap" }}>
+                        {relativeDate(event.date)}
+                      </span>
                     </div>
                   );
                 }
-                const col = cardColor(event.id);
                 return (
                   <div
                     key={event.id}
                     className="flex items-center gap-2 rounded-xl px-3 py-2 flex-shrink-0"
-                    style={{
-                      background: col.bg,
-                      boxShadow: "var(--shadow-warm)",
-                    }}
+                    style={{ background: col.bg, boxShadow: "var(--shadow-warm)" }}
                   >
                     <CharmIcon charmId={event.charmId} size={26} />
                     <div className="flex flex-col">
@@ -237,8 +234,8 @@ export default function WeekView({
             </div>
           </div>
         ) : (
-          <p className="px-5 py-3" style={{ fontFamily: "var(--font-hand)", fontSize: 15, color: "var(--ink-faint)", fontStyle: "italic" }}>
-            nothing on the horizon yet — add something to look forward to ♡
+          <p className="px-5 py-3" style={{ fontFamily: "var(--font-hand)", fontSize: isMobile ? 13 : 15, color: "var(--ink-faint)", fontStyle: "italic" }}>
+            {isMobile ? "nothing ahead ♡" : "nothing on the horizon yet — add something to look forward to ♡"}
           </p>
         )}
       </div>

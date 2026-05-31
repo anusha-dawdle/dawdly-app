@@ -12,6 +12,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
   title: "dawdly — a calendar for things you look forward to",
   description: "Every other calendar answers what do I have to do? This one answers what do I get to look forward to?",

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import type { DawdlyEvent } from "@/lib/types";
+import { useBreakpoint } from "@/lib/breakpoint";
 import { CHARM_LIST, CHARM_CATEGORIES, CHARMS, DEFAULT_CHARM_ID, pickExtraCharm, suggestCharm, type CharmId, type Charm } from "@/lib/charms";
 import CharmIcon from "./CharmIcon";
 
@@ -15,6 +16,7 @@ interface AddEventModalProps {
 }
 
 export default function AddEventModal({ defaultDate, editEvent, onSave, onClose }: AddEventModalProps) {
+  const isMobile = useBreakpoint() === "mobile";
   const [kind, setKind]                 = useState<"personal" | "work">(editEvent?.kind ?? "personal");
   const [title, setTitle]               = useState(editEvent?.title ?? "");
   const [date, setDate]                 = useState(editEvent?.date ?? defaultDate);
@@ -55,19 +57,21 @@ export default function AddEventModal({ defaultDate, editEvent, onSave, onClose 
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: "rgba(74,61,49,0.35)", backdropFilter: "blur(5px)" }}
+      className="fixed inset-0 z-50"
+      style={{ background: "rgba(74,61,49,0.35)", backdropFilter: "blur(5px)", display: "flex", alignItems: isMobile ? "flex-end" : "center", justifyContent: "center", padding: isMobile ? 0 : 16 }}
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div
-        className="w-full max-w-md rounded-3xl overflow-hidden"
         style={{
+          width: "100%",
+          maxWidth: isMobile ? "100%" : 448,
           background: "var(--paper)",
-          border: "1px solid rgba(180,140,90,0.25)",
+          border: isMobile ? "none" : "1px solid rgba(180,140,90,0.25)",
           boxShadow: "0 8px 40px rgba(74,61,49,0.2)",
           maxHeight: "90vh",
           display: "flex",
           flexDirection: "column",
+          borderRadius: isMobile ? "24px 24px 0 0" : 24,
         }}
       >
         {/* Header */}
@@ -177,7 +181,7 @@ export default function AddEventModal({ defaultDate, editEvent, onSave, onClose 
                       no charms match &ldquo;{charmSearch}&rdquo;
                     </p>
                   ) : (
-                    <div className="grid" style={{ gridTemplateColumns: "repeat(5, 1fr)", gap: 6 }}>
+                    <div className="grid" style={{ gridTemplateColumns: `repeat(${isMobile ? 4 : 5}, 1fr)`, gap: 6 }}>
                       {filteredCharms.map((charm) => (
                         <CharmButton key={charm.id} charm={charm} selected={charm.id === effectiveCharm} onPick={pickCharm} />
                       ))}
@@ -196,7 +200,7 @@ export default function AddEventModal({ defaultDate, editEvent, onSave, onClose 
                       }}>
                         {cat.label}
                       </p>
-                      <div className="grid" style={{ gridTemplateColumns: "repeat(5, 1fr)", gap: 6 }}>
+                      <div className="grid" style={{ gridTemplateColumns: `repeat(${isMobile ? 4 : 5}, 1fr)`, gap: 6 }}>
                         {cat.ids.map((id) => {
                           const charm = CHARMS[id];
                           return <CharmButton key={id} charm={charm} selected={id === effectiveCharm} onPick={pickCharm} />;
