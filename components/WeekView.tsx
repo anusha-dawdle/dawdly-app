@@ -267,6 +267,7 @@ function WorkEventRow({
           fontSize: 13,
           color: "#5B6E7A",
           lineHeight: 1.3,
+          textAlign: "center",
           overflow: "hidden",
           display: "-webkit-box",
           WebkitLineClamp: 2,
@@ -276,7 +277,7 @@ function WorkEventRow({
         {event.title}
       </p>
       {event.startTime && (
-        <p style={{ fontFamily: "var(--font-hand)", fontSize: 11, color: "#8BA0AB", marginTop: 1 }}>
+        <p style={{ fontFamily: "var(--font-hand)", fontSize: 11, color: "#8BA0AB", marginTop: 1, textAlign: "center" }}>
           {formatTime(event.startTime)}
         </p>
       )}
