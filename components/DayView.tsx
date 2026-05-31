@@ -24,11 +24,6 @@ function cardColor(id: string) {
   return CARD_COLORS[Math.abs(h) % CARD_COLORS.length];
 }
 
-function tilt(id: string): number {
-  let h = 0;
-  for (let i = 0; i < id.length; i++) h = (Math.imul(31, h) + id.charCodeAt(i)) | 0;
-  return ((h % 7) - 3) * 0.45; // ±1.35°
-}
 
 export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEvent }: DayViewProps) {
   const { weekday, day } = formatDayHeader(date);
@@ -124,14 +119,12 @@ export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEv
 
 function DayEventCard({ event, onDelete }: { event: DawdlyEvent; onDelete: (id: string) => void }) {
   const col = cardColor(event.id);
-  const deg = tilt(event.id);
 
   return (
     <div
       className="group relative flex items-center gap-5 rounded-2xl px-5 py-4"
       style={{
         background: col.bg,
-        transform: `rotate(${deg}deg)`,
         boxShadow: "0 3px 14px rgba(74,61,49,0.13), 0 1px 4px rgba(74,61,49,0.08)",
       }}
     >

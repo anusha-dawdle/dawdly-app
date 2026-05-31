@@ -18,12 +18,6 @@ interface WeekViewProps {
   onDeleteEvent: (id: string) => void;
 }
 
-/** Deterministic tilt per event so the same card always has the same angle */
-function tilt(id: string): number {
-  let h = 0;
-  for (let i = 0; i < id.length; i++) h = (Math.imul(31, h) + id.charCodeAt(i)) | 0;
-  return ((h % 9) - 4) * 0.6; // ±2.4°
-}
 
 const CARD_COLORS = [
   { bg: "var(--card-sage)",   ink: "var(--card-sage-ink)" },
@@ -132,13 +126,11 @@ export default function WeekView({
                     </button>
                   )}
                   {dayEvents.map((event, idx) => {
-                    const deg = tilt(event.id);
                     const col = cardColor(event.id);
                     return (
                       <WeekEventCard
                         key={event.id}
                         event={event}
-                        deg={deg}
                         bg={col.bg}
                         ink={col.ink}
                         onDelete={onDeleteEvent}
@@ -216,7 +208,6 @@ export default function WeekView({
 
 function WeekEventCard({
   event,
-  deg,
   bg,
   ink,
   onDelete,
@@ -224,7 +215,6 @@ function WeekEventCard({
   overlap = false,
 }: {
   event: DawdlyEvent;
-  deg: number;
   bg: string;
   ink: string;
   onDelete: (id: string) => void;
@@ -236,7 +226,6 @@ function WeekEventCard({
     <div
       className="group relative flex flex-col items-center w-full"
       style={{
-        transform: `rotate(${deg}deg)`,
         marginTop: overlap ? -48 : 4,
         paddingBottom: 2,
       }}
