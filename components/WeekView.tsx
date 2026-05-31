@@ -244,7 +244,7 @@ function WeekEventCard({
           fontSize: 13,
           color: ink,
           lineHeight: 1.2,
-          marginTop: 2,
+          marginTop: -14,
           display: "-webkit-box",
           WebkitLineClamp: 2,
           WebkitBoxOrient: "vertical",
@@ -255,7 +255,7 @@ function WeekEventCard({
         {event.title}
       </p>
       {event.startTime && (
-        <p style={{ fontFamily: "var(--font-hand)", fontSize: 12, color: "var(--ink-faint)", marginTop: 1 }}>
+        <p style={{ fontFamily: "var(--font-hand)", fontSize: 12, color: "var(--ink-faint)", marginTop: 0 }}>
           {formatTime(event.startTime)}
         </p>
       )}
