@@ -51,10 +51,10 @@ export default function WeekView({
     .slice(0, 12);
 
   return (
-    <div className="h-full overflow-y-auto" style={{ background: "var(--paper)" }}>
+    <div className="h-full flex flex-col" style={{ background: "var(--paper)" }}>
 
       {/* Month heading */}
-      <div className="text-center pt-4 pb-1">
+      <div className="flex-shrink-0 text-center pt-4 pb-1">
         <span style={{
           fontFamily: "var(--font-hand)",
           fontSize: 26,
@@ -65,7 +65,8 @@ export default function WeekView({
         </span>
       </div>
 
-      {/* Day columns — grow naturally, no per-column scroll */}
+      {/* Day columns — global scroll, columns grow naturally */}
+      <div className="flex-1 overflow-y-auto">
       <div className="flex px-3 pb-2">
         {days.map((day, i) => {
           const { weekday, day: dayNum } = formatDayHeader(day);
@@ -173,9 +174,10 @@ export default function WeekView({
           );
         })}
       </div>
+      </div>
 
-      {/* On the horizon */}
-      <div style={{ borderTop: "1.5px dashed rgba(180,140,90,0.3)" }}>
+      {/* On the horizon — pinned to bottom */}
+      <div className="flex-shrink-0" style={{ borderTop: "1.5px dashed rgba(180,140,90,0.3)" }}>
         {horizonEvents.length > 0 ? (
           <div className="px-5 pt-3 pb-4">
             <p style={{
