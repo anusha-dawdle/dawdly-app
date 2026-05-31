@@ -232,7 +232,7 @@ function WeekEventCard({
       className="group relative flex flex-col items-center w-full cursor-pointer"
       onClick={() => onClick(event)}
       style={{
-        marginTop: overlap ? -48 : 4,
+        marginTop: overlap ? -16 : 4,
         paddingBottom: 2,
       }}
     >
