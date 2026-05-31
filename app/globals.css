@@ -22,9 +22,9 @@
   --border-warm: rgba(180, 140, 90, 0.18);
   --shadow-warm: 0 2px 12px rgba(74, 61, 49, 0.13);
 
-  --font-serif:       var(--font-fraunces), Georgia, serif;
-  --font-hand:        var(--font-caveat), cursive;
-  --font-sans:        var(--font-dm-sans), system-ui, sans-serif;
+  --font-serif:       Georgia, serif;
+  --font-hand:        Georgia, serif;
+  --font-sans:        var(--font-geist-sans), system-ui, sans-serif;
 }
 
 /* ─── Base ───────────────────────────────────────────────── */

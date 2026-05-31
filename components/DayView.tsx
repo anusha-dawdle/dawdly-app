@@ -135,17 +135,7 @@ function DayEventCard({ event, onDelete }: { event: DawdlyEvent; onDelete: (id: 
         boxShadow: "0 3px 14px rgba(74,61,49,0.13), 0 1px 4px rgba(74,61,49,0.08)",
       }}
     >
-      {/* Polaroid-style charm frame */}
-      <div
-        className="flex-shrink-0 flex items-center justify-center rounded-xl"
-        style={{
-          background: "rgba(255,255,255,0.55)",
-          padding: 6,
-          boxShadow: "0 1px 6px rgba(74,61,49,0.1)",
-        }}
-      >
-        <CharmIcon charmId={event.charmId} size={72} />
-      </div>
+      <CharmIcon charmId={event.charmId} size={100} className="flex-shrink-0" />
 
       {/* Text */}
       <div className="flex-1 min-w-0">

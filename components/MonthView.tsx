@@ -122,12 +122,12 @@ export default function MonthView({ anchor, getEventsForDate, onDayClick }: Mont
               <div className="flex flex-col gap-0.5 w-full">
                 {visible.map((event) => (
                   <div key={event.id} className="flex items-center gap-1 min-w-0">
-                    <CharmIcon charmId={event.charmId} size={18} />
+                    <CharmIcon charmId={event.charmId} size={22} />
                     <span
                       className="truncate"
                       style={{
                         fontFamily: "var(--font-hand)",
-                        fontSize: 11,
+                        fontSize: 12,
                         color: "var(--ink-muted)",
                         lineHeight: 1.2,
                       }}
@@ -137,7 +137,7 @@ export default function MonthView({ anchor, getEventsForDate, onDayClick }: Mont
                   </div>
                 ))}
                 {overflow > 0 && (
-                  <span style={{ fontFamily: "var(--font-hand)", fontSize: 11, color: "var(--ink-faint)" }}>
+                  <span style={{ fontFamily: "var(--font-hand)", fontSize: 12, color: "var(--ink-faint)" }}>
                     +{overflow} more
                   </span>
                 )}

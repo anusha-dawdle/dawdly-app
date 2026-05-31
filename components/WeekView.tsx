@@ -102,7 +102,7 @@ export default function WeekView({
                 >
                   <span style={{
                     fontFamily: "var(--font-sans)",
-                    fontSize: 10,
+                    fontSize: 12,
                     fontWeight: 600,
                     letterSpacing: "0.1em",
                     textTransform: "uppercase",
@@ -127,7 +127,7 @@ export default function WeekView({
                     <button
                       onClick={() => onDayClick(day)}
                       className="w-full mt-1 rounded-xl py-1 opacity-0 hover:opacity-100 transition-opacity text-center"
-                      style={{ fontSize: 11, color: "var(--ink-faint)", fontFamily: "var(--font-hand)" }}
+                      style={{ fontSize: 12, color: "var(--ink-faint)", fontFamily: "var(--font-hand)" }}
                     >
                       + add
                     </button>
@@ -151,7 +151,7 @@ export default function WeekView({
                     <button
                       onClick={() => onDayClick(day)}
                       className="mt-0.5 rounded-lg px-3 py-0.5 opacity-0 hover:opacity-80 transition-opacity"
-                      style={{ fontSize: 11, color: "var(--ink-faint)", fontFamily: "var(--font-hand)", background: "rgba(180,140,90,0.1)" }}
+                      style={{ fontSize: 12, color: "var(--ink-faint)", fontFamily: "var(--font-hand)", background: "rgba(180,140,90,0.1)" }}
                     >
                       + add
                     </button>
@@ -234,10 +234,10 @@ function WeekEventCard({
         background: bg,
         transform: `rotate(${deg}deg)`,
         boxShadow: "0 2px 8px rgba(74,61,49,0.12), 0 1px 3px rgba(74,61,49,0.08)",
-        maxWidth: 110,
+        maxWidth: 130,
       }}
     >
-      <CharmIcon charmId={event.charmId} size={64} />
+      <CharmIcon charmId={event.charmId} size={88} />
       <p
         className="text-center mt-1 w-full"
         style={{
@@ -254,7 +254,7 @@ function WeekEventCard({
         {event.title}
       </p>
       {event.startTime && (
-        <p style={{ fontFamily: "var(--font-hand)", fontSize: 11, color: "var(--ink-faint)", marginTop: 1 }}>
+        <p style={{ fontFamily: "var(--font-hand)", fontSize: 12, color: "var(--ink-faint)", marginTop: 1 }}>
           {formatTime(event.startTime)}
         </p>
       )}
