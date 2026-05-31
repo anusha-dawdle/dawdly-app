@@ -5,20 +5,27 @@ import type { DawdlyEvent } from "@/lib/types";
 import { CHARM_LIST, CHARM_CATEGORIES, CHARMS, DEFAULT_CHARM_ID, pickExtraCharm, suggestCharm, type CharmId, type Charm } from "@/lib/charms";
 import CharmIcon from "./CharmIcon";
 
+import { resolveCharmId } from "@/lib/charms";
+
 interface AddEventModalProps {
   defaultDate: string;
+  editEvent?: DawdlyEvent;
   onSave: (event: DawdlyEvent) => void;
   onClose: () => void;
 }
 
-export default function AddEventModal({ defaultDate, onSave, onClose }: AddEventModalProps) {
-  const [title, setTitle]               = useState("");
-  const [date, setDate]                 = useState(defaultDate);
-  const [startTime, setStartTime]       = useState("");
-  const [note, setNote]                 = useState("");
-  const [selectedCharm, setSelectedCharm] = useState<CharmId>(DEFAULT_CHARM_ID);
-  const [userPickedCharm, setUserPickedCharm] = useState(false);
+export default function AddEventModal({ defaultDate, editEvent, onSave, onClose }: AddEventModalProps) {
+  const [title, setTitle]               = useState(editEvent?.title ?? "");
+  const [date, setDate]                 = useState(editEvent?.date ?? defaultDate);
+  const [startTime, setStartTime]       = useState(editEvent?.startTime ?? "");
+  const [note, setNote]                 = useState(editEvent?.note ?? "");
+  const [selectedCharm, setSelectedCharm] = useState<CharmId>(
+    editEvent ? resolveCharmId(editEvent.charmId) : DEFAULT_CHARM_ID
+  );
+  const [userPickedCharm, setUserPickedCharm] = useState(!!editEvent);
   const [charmSearch, setCharmSearch]   = useState("");
+
+  const isEditing = !!editEvent;
 
   // Auto-suggest based on title unless user has explicitly picked
   const suggested = useMemo(() => suggestCharm(title), [title]);
@@ -39,7 +46,7 @@ export default function AddEventModal({ defaultDate, onSave, onClose }: AddEvent
 
   function handleSave() {
     if (!title.trim()) return;
-    const id = crypto.randomUUID();
+    const id = editEvent?.id ?? crypto.randomUUID();
     const charmId = userPickedCharm ? selectedCharm : (suggested ?? pickExtraCharm(id));
     onSave({ id, title: title.trim(), charmId, date, startTime: startTime || undefined, note: note.trim() || undefined });
     onClose();
@@ -65,7 +72,7 @@ export default function AddEventModal({ defaultDate, onSave, onClose }: AddEvent
         {/* Header */}
         <div className="px-6 pt-5 pb-3 flex-shrink-0">
           <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 22, fontWeight: 600, color: "var(--ink)" }}>
-            something to look forward to
+            {isEditing ? "edit this event" : "something to look forward to"}
           </h2>
         </div>
 
@@ -249,7 +256,7 @@ export default function AddEventModal({ defaultDate, onSave, onClose }: AddEvent
               color: title.trim() ? "#fff" : "var(--ink-faint)",
             }}
           >
-            add to my calendar ✦
+            {isEditing ? "save changes ✦" : "add to my calendar ✦"}
           </button>
         </div>
       </div>

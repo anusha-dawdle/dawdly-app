@@ -9,6 +9,7 @@ interface DayViewProps {
   getEventsForDate: (date: string) => DawdlyEvent[];
   onAddClick: () => void;
   onDeleteEvent: (id: string) => void;
+  onEventClick: (event: DawdlyEvent) => void;
 }
 
 const CARD_COLORS = [
@@ -25,7 +26,7 @@ function cardColor(id: string) {
 }
 
 
-export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEvent }: DayViewProps) {
+export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEvent, onEventClick }: DayViewProps) {
   const { weekday, day } = formatDayHeader(date);
   const monthLabel = formatMonthYear(date);
   const events = getEventsForDate(date);
@@ -95,6 +96,7 @@ export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEv
                 key={event.id}
                 event={event}
                 onDelete={onDeleteEvent}
+                onClick={onEventClick}
               />
             ))}
             <button
@@ -117,12 +119,13 @@ export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEv
   );
 }
 
-function DayEventCard({ event, onDelete }: { event: DawdlyEvent; onDelete: (id: string) => void }) {
+function DayEventCard({ event, onDelete, onClick }: { event: DawdlyEvent; onDelete: (id: string) => void; onClick: (event: DawdlyEvent) => void }) {
   const col = cardColor(event.id);
 
   return (
     <div
-      className="group relative flex items-center gap-5 rounded-2xl px-5 py-4"
+      className="group relative flex items-center gap-5 rounded-2xl px-5 py-4 cursor-pointer"
+      onClick={() => onClick(event)}
       style={{
         background: col.bg,
         boxShadow: "0 3px 14px rgba(74,61,49,0.13), 0 1px 4px rgba(74,61,49,0.08)",
@@ -162,7 +165,7 @@ function DayEventCard({ event, onDelete }: { event: DawdlyEvent; onDelete: (id: 
 
       {/* Delete */}
       <button
-        onClick={() => onDelete(event.id)}
+        onClick={(e) => { e.stopPropagation(); onDelete(event.id); }}
         className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity rounded-full w-5 h-5 flex items-center justify-center"
         style={{ background: "rgba(74,61,49,0.12)", color: "var(--ink-muted)", fontSize: 13 }}
         title="Remove"

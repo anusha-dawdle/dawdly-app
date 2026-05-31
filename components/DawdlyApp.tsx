@@ -15,11 +15,25 @@ export default function DawdlyApp() {
   const [showModal, setShowModal] = useState(false);
   const [modalDate, setModalDate] = useState(today());
 
-  const { events, addEvent, deleteEvent, getEventsForDate } = useEvents();
+  const [editingEvent, setEditingEvent] = useState<import("@/lib/types").DawdlyEvent | null>(null);
+
+  const { events, addEvent, deleteEvent, updateEvent, getEventsForDate } = useEvents();
 
   function openAddModal(date: string) {
+    setEditingEvent(null);
     setModalDate(date);
     setShowModal(true);
+  }
+
+  function openEditModal(event: import("@/lib/types").DawdlyEvent) {
+    setEditingEvent(event);
+    setModalDate(event.date);
+    setShowModal(true);
+  }
+
+  function handleSaveEvent(event: import("@/lib/types").DawdlyEvent) {
+    if (editingEvent) updateEvent(event);
+    else addEvent(event);
   }
 
   function handlePrev() {
@@ -139,6 +153,7 @@ export default function DawdlyApp() {
             getEventsForDate={getEventsForDate}
             onDayClick={handleDayClick}
             onDeleteEvent={deleteEvent}
+            onEventClick={openEditModal}
           />
         )}
         {view === "month" && (
@@ -154,6 +169,7 @@ export default function DawdlyApp() {
             getEventsForDate={getEventsForDate}
             onAddClick={() => openAddModal(anchor)}
             onDeleteEvent={deleteEvent}
+            onEventClick={openEditModal}
           />
         )}
       </main>
@@ -162,8 +178,9 @@ export default function DawdlyApp() {
       {showModal && (
         <AddEventModal
           defaultDate={modalDate}
-          onSave={addEvent}
-          onClose={() => setShowModal(false)}
+          editEvent={editingEvent ?? undefined}
+          onSave={handleSaveEvent}
+          onClose={() => { setShowModal(false); setEditingEvent(null); }}
         />
       )}
     </div>

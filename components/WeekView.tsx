@@ -16,6 +16,7 @@ interface WeekViewProps {
   getEventsForDate: (date: string) => DawdlyEvent[];
   onDayClick: (date: string) => void;
   onDeleteEvent: (id: string) => void;
+  onEventClick: (event: DawdlyEvent) => void;
 }
 
 
@@ -38,6 +39,7 @@ export default function WeekView({
   getEventsForDate,
   onDayClick,
   onDeleteEvent,
+  onEventClick,
 }: WeekViewProps) {
   const days = getWeekDays(anchor);
   const weekEnd = days[6];
@@ -134,6 +136,7 @@ export default function WeekView({
                         bg={col.bg}
                         ink={col.ink}
                         onDelete={onDeleteEvent}
+                        onClick={onEventClick}
                         onAdd={() => onDayClick(day)}
                         iconSize={160}
                         overlap={idx > 0}
@@ -211,6 +214,7 @@ function WeekEventCard({
   bg,
   ink,
   onDelete,
+  onClick,
   iconSize = 160,
   overlap = false,
 }: {
@@ -218,13 +222,15 @@ function WeekEventCard({
   bg: string;
   ink: string;
   onDelete: (id: string) => void;
+  onClick: (event: DawdlyEvent) => void;
   onAdd: () => void;
   iconSize?: number;
   overlap?: boolean;
 }) {
   return (
     <div
-      className="group relative flex flex-col items-center w-full"
+      className="group relative flex flex-col items-center w-full cursor-pointer"
+      onClick={() => onClick(event)}
       style={{
         marginTop: overlap ? -48 : 4,
         paddingBottom: 2,
@@ -254,7 +260,7 @@ function WeekEventCard({
         </p>
       )}
       <button
-        onClick={() => onDelete(event.id)}
+        onClick={(e) => { e.stopPropagation(); onDelete(event.id); }}
         className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity rounded-full w-4 h-4 flex items-center justify-center"
         style={{ background: "rgba(74,61,49,0.15)", color: "var(--ink-muted)", fontSize: 12, lineHeight: 1 }}
         title="Remove"
