@@ -140,6 +140,7 @@ export default function WeekView({
                         onAdd={() => onDayClick(day)}
                         iconSize={160}
                         overlap={idx > 0}
+                        zIndex={dayEvents.length - idx}
                       />
                     );
                   })}
@@ -217,6 +218,7 @@ function WeekEventCard({
   onClick,
   iconSize = 160,
   overlap = false,
+  zIndex = 1,
 }: {
   event: DawdlyEvent;
   bg: string;
@@ -226,6 +228,7 @@ function WeekEventCard({
   onAdd: () => void;
   iconSize?: number;
   overlap?: boolean;
+  zIndex?: number;
 }) {
   return (
     <div
@@ -234,6 +237,8 @@ function WeekEventCard({
       style={{
         marginTop: overlap ? -16 : 4,
         paddingBottom: 2,
+        position: "relative",
+        zIndex,
       }}
     >
       <CharmIcon charmId={event.charmId} size={iconSize} />
