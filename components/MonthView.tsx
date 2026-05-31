@@ -30,10 +30,10 @@ export default function MonthView({ anchor, getEventsForDate, onDayClick }: Mont
       {/* Month heading */}
       <div className="pt-4 pb-1 text-center">
         <span style={{
-          fontFamily: "var(--font-sans)",
+          fontFamily: "var(--font-hand)",
           fontSize: 26,
           color: "var(--accent)",
-          letterSpacing: "0.04em",
+          letterSpacing: "0.01em",
         }}>
           {formatMonthYear(anchor)}
         </span>
