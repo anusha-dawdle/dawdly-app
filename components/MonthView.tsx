@@ -26,20 +26,16 @@ export default function MonthView({ anchor, getEventsForDate, onDayClick }: Mont
   return (
     <div className="flex flex-col h-full px-4 pb-4" style={{ background: "var(--paper)" }}>
 
-      {/* Handwriting heading */}
+      {/* Month heading */}
       <div className="pt-4 pb-1 text-center">
         <span style={{
           fontFamily: "var(--font-hand)",
-          fontSize: 28,
+          fontSize: 26,
           color: "var(--accent)",
           letterSpacing: "0.01em",
         }}>
           {formatMonthYear(anchor)}
         </span>
-        {/* Underline flourish */}
-        <svg width="160" height="10" viewBox="0 0 160 10" className="block mx-auto mt-0.5" fill="none">
-          <path d="M4 6 Q40 2 80 6 Q120 10 156 5" stroke="var(--marker)" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.5"/>
-        </svg>
       </div>
 
       {/* Weekday labels */}
@@ -49,9 +45,10 @@ export default function MonthView({ anchor, getEventsForDate, onDayClick }: Mont
             key={w}
             className="text-center py-1"
             style={{
-              fontFamily: "var(--font-hand)",
-              fontSize: 13,
-              color: "var(--ink-muted)",
+              fontFamily: "var(--font-sans)",
+              fontSize: 12,
+              fontWeight: 600,
+              color: "var(--ink-faint)",
               letterSpacing: "0.04em",
             }}
           >
@@ -89,7 +86,7 @@ export default function MonthView({ anchor, getEventsForDate, onDayClick }: Mont
           const events = getEventsForDate(day);
           const todayDay = isToday(day);
           const dayNum = parseInt(day.split("-")[2]);
-          const visible = events.slice(0, 2);
+          const visible = events.slice(0, 3);
           const overflow = events.length - visible.length;
 
           return (
@@ -126,27 +123,14 @@ export default function MonthView({ anchor, getEventsForDate, onDayClick }: Mont
                 {dayNum}
               </span>
 
-              {/* Charm thumbnails */}
-              <div className="flex flex-col gap-0.5 w-full">
+              {/* Charm icons only */}
+              <div className="flex flex-wrap gap-0.5">
                 {visible.map((event) => (
-                  <div key={event.id} className="flex items-center gap-1 min-w-0">
-                    <CharmIcon charmId={event.charmId} size={40} />
-                    <span
-                      className="truncate"
-                      style={{
-                        fontFamily: "var(--font-hand)",
-                        fontSize: 12,
-                        color: "var(--ink-muted)",
-                        lineHeight: 1.2,
-                      }}
-                    >
-                      {event.title}
-                    </span>
-                  </div>
+                  <CharmIcon key={event.id} charmId={event.charmId} size={36} />
                 ))}
                 {overflow > 0 && (
-                  <span style={{ fontFamily: "var(--font-hand)", fontSize: 12, color: "var(--ink-faint)" }}>
-                    +{overflow} more
+                  <span className="flex items-center" style={{ fontFamily: "var(--font-hand)", fontSize: 11, color: "var(--ink-faint)" }}>
+                    +{overflow}
                   </span>
                 )}
               </div>
