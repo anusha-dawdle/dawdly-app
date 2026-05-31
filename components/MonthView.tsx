@@ -32,7 +32,6 @@ export default function MonthView({ anchor, getEventsForDate, onDayClick }: Mont
         <span style={{
           fontFamily: "var(--font-sans)",
           fontSize: 26,
-          fontWeight: 600,
           color: "var(--accent)",
           letterSpacing: "0.04em",
         }}>

@@ -58,7 +58,6 @@ export default function WeekView({
         <span style={{
           fontFamily: "var(--font-sans)",
           fontSize: 26,
-          fontWeight: 600,
           color: "var(--accent)",
           letterSpacing: "0.04em",
         }}>
