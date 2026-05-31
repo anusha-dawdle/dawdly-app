@@ -59,7 +59,7 @@ export default function WeekView({
       <div className="text-center pt-4 pb-1 flex-shrink-0">
         <span style={{
           fontFamily: "var(--font-hand)",
-          fontSize: 34,
+          fontSize: 26,
           color: "var(--accent)",
           letterSpacing: "0.01em",
         }}>
@@ -143,6 +143,7 @@ export default function WeekView({
                         ink={col.ink}
                         onDelete={onDeleteEvent}
                         onAdd={() => onDayClick(day)}
+                        iconSize={120}
                       />
                     );
                   })}
@@ -218,6 +219,7 @@ function WeekEventCard({
   bg,
   ink,
   onDelete,
+  iconSize = 120,
 }: {
   event: DawdlyEvent;
   deg: number;
@@ -225,6 +227,7 @@ function WeekEventCard({
   ink: string;
   onDelete: (id: string) => void;
   onAdd: () => void;
+  iconSize?: number;
 }) {
   return (
     <div
@@ -234,7 +237,7 @@ function WeekEventCard({
         maxWidth: 130,
       }}
     >
-      <CharmIcon charmId={event.charmId} size={88} />
+      <CharmIcon charmId={event.charmId} size={iconSize} />
       <p
         className="text-center mt-1 w-full"
         style={{

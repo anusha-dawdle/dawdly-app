@@ -82,7 +82,7 @@ export default function DawdlyApp() {
               <button
                 key={v}
                 onClick={() => setView(v)}
-                className="px-4 py-1.5 rounded-lg capitalize transition-colors"
+                className="px-4 py-1.5 rounded-lg transition-colors"
                 style={{
                   fontFamily: "var(--font-hand)",
                   fontSize: 15,

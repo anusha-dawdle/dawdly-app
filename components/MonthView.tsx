@@ -9,7 +9,7 @@ import {
 } from "@/lib/dates";
 import CharmIcon from "./CharmIcon";
 
-const WEEKDAY_LABELS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+const WEEKDAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 interface MonthViewProps {
   anchor: string;
@@ -30,7 +30,7 @@ export default function MonthView({ anchor, getEventsForDate, onDayClick }: Mont
       <div className="pt-4 pb-1 text-center">
         <span style={{
           fontFamily: "var(--font-hand)",
-          fontSize: 36,
+          fontSize: 28,
           color: "var(--accent)",
           letterSpacing: "0.01em",
         }}>
@@ -106,12 +106,12 @@ export default function MonthView({ anchor, getEventsForDate, onDayClick }: Mont
                 padding: "6px 5px 4px",
               }}
             >
-              {/* Hover + badge */}
+              {/* Hover + button */}
               <span
-                className="absolute top-1 right-1 opacity-0 group-hover/day:opacity-100 transition-opacity rounded-full w-4 h-4 flex items-center justify-center pointer-events-none"
-                style={{ background: "var(--accent)", color: "#fff", fontSize: 12, lineHeight: 1, fontWeight: 600 }}
+                className="absolute inset-x-1 bottom-1 opacity-0 group-hover/day:opacity-100 transition-opacity rounded-lg flex items-center justify-center pointer-events-none"
+                style={{ background: "var(--accent)", color: "#fff", fontSize: 13, fontWeight: 700, fontFamily: "var(--font-hand)", paddingTop: 3, paddingBottom: 3 }}
               >
-                +
+                + add
               </span>
 
               {/* Day number */}
@@ -130,7 +130,7 @@ export default function MonthView({ anchor, getEventsForDate, onDayClick }: Mont
               <div className="flex flex-col gap-0.5 w-full">
                 {visible.map((event) => (
                   <div key={event.id} className="flex items-center gap-1 min-w-0">
-                    <CharmIcon charmId={event.charmId} size={22} />
+                    <CharmIcon charmId={event.charmId} size={30} />
                     <span
                       className="truncate"
                       style={{
