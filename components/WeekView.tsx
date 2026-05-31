@@ -67,7 +67,7 @@ export default function WeekView({
 
       {/* Day columns — global scroll, columns grow naturally */}
       <div className="flex-1 overflow-y-auto">
-      <div className="flex px-3 pb-2">
+      <div className="flex px-3 pb-2 min-h-full">
         {days.map((day, i) => {
           const { weekday, day: dayNum } = formatDayHeader(day);
           const dayEvents = getEventsForDate(day);
