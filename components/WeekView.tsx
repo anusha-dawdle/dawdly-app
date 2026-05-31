@@ -255,12 +255,14 @@ function WeekEventCard({
           WebkitBoxOrient: "vertical",
           overflow: "hidden",
           paddingInline: 4,
+          position: "relative",
+          zIndex: 1,
         }}
       >
         {event.title}
       </p>
       {event.startTime && (
-        <p style={{ fontFamily: "var(--font-hand)", fontSize: 12, color: "var(--ink-faint)", marginTop: 0 }}>
+        <p style={{ fontFamily: "var(--font-hand)", fontSize: 12, color: "var(--ink-faint)", marginTop: 0, position: "relative", zIndex: 1 }}>
           {formatTime(event.startTime)}
         </p>
       )}
