@@ -260,7 +260,7 @@ function WorkEventRow({
         paddingTop: 3,
         paddingBottom: 3,
         marginTop: 4,
-        marginBottom: 4,
+        marginBottom: 2,
       }}
     >
       <p
