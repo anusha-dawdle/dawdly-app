@@ -21,7 +21,7 @@ export default function EventPill({
         <p
           className="text-center leading-tight w-full"
           style={{
-            color: "#D97706",
+            color: "#7C3D1A",
             fontSize: 12,
             display: "-webkit-box",
             WebkitLineClamp: 2,

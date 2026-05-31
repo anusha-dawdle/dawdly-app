@@ -8,7 +8,6 @@ import {
   formatMonthYear,
   relativeDate,
 } from "@/lib/dates";
-import EventPill from "./EventPill";
 import CharmIcon from "./CharmIcon";
 
 interface WeekViewProps {
@@ -19,6 +18,26 @@ interface WeekViewProps {
   onDeleteEvent: (id: string) => void;
 }
 
+/** Deterministic tilt per event so the same card always has the same angle */
+function tilt(id: string): number {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (Math.imul(31, h) + id.charCodeAt(i)) | 0;
+  return ((h % 9) - 4) * 0.6; // ±2.4°
+}
+
+const CARD_COLORS = [
+  { bg: "var(--card-sage)",   ink: "var(--card-sage-ink)" },
+  { bg: "var(--card-pink)",   ink: "var(--card-pink-ink)" },
+  { bg: "var(--card-butter)", ink: "var(--card-butter-ink)" },
+  { bg: "var(--card-mint)",   ink: "var(--card-mint-ink)" },
+];
+
+function cardColor(id: string) {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (Math.imul(31, h) + id.charCodeAt(i)) | 0;
+  return CARD_COLORS[Math.abs(h) % CARD_COLORS.length];
+}
+
 export default function WeekView({
   anchor,
   events,
@@ -27,28 +46,29 @@ export default function WeekView({
   onDeleteEvent,
 }: WeekViewProps) {
   const days = getWeekDays(anchor);
-  const monthLabel = formatMonthYear(days[0]);
   const weekEnd = days[6];
-
-  // Events after this week, sorted soonest first
   const horizonEvents = events
     .filter((e) => e.date > weekEnd)
-    .sort((a, b) => a.date.localeCompare(b.date));
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .slice(0, 12);
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Month label */}
-      <div className="px-6 pt-3 pb-2 text-center">
-        <span
-          className="text-3xl font-semibold"
-          style={{ color: "#7C3D1A", fontFamily: "Georgia, serif" }}
-        >
-          {monthLabel}
+    <div className="flex flex-col h-full" style={{ background: "var(--paper)" }}>
+
+      {/* Month heading */}
+      <div className="text-center pt-4 pb-1 flex-shrink-0">
+        <span style={{
+          fontFamily: "var(--font-hand)",
+          fontSize: 34,
+          color: "var(--accent)",
+          letterSpacing: "0.01em",
+        }}>
+          {formatMonthYear(days[0])}
         </span>
       </div>
 
-      {/* Day columns with vertical dividers */}
-      <div className="flex flex-1 px-4 overflow-hidden" style={{ minHeight: 0 }}>
+      {/* Day columns */}
+      <div className="flex flex-1 px-3 pb-2 overflow-hidden" style={{ minHeight: 0 }}>
         {days.map((day, i) => {
           const { weekday, day: dayNum } = formatDayHeader(day);
           const dayEvents = getEventsForDate(day);
@@ -56,123 +76,202 @@ export default function WeekView({
 
           return (
             <div key={day} className="flex flex-1 min-w-0">
-              {/* Divider before each column except the first */}
+              {/* Dashed divider */}
               {i > 0 && (
-                <div
-                  style={{
-                    width: 1,
-                    background: "#E8DDD0",
-                    opacity: 0.5,
-                    flexShrink: 0,
-                  }}
-                />
+                <div style={{
+                  width: 1,
+                  flexShrink: 0,
+                  borderLeft: "1.5px dashed",
+                  borderColor: "rgba(180,140,90,0.25)",
+                  margin: "8px 0",
+                }} />
               )}
 
               <div
-                className="flex-1 flex flex-col min-w-0 rounded-2xl overflow-hidden"
+                className="flex-1 flex flex-col min-w-0 rounded-2xl"
                 style={{
-                  background: todayDay ? "#FFFBEF" : "transparent",
-                  outline: todayDay ? "1.5px solid #FDE68A" : "none",
+                  background: todayDay ? "rgba(221,130,38,0.07)" : "transparent",
+                  outline: todayDay ? "1.5px solid rgba(221,130,38,0.35)" : "none",
                   outlineOffset: -1,
                 }}
               >
                 {/* Day header */}
                 <button
                   onClick={() => onDayClick(day)}
-                  className="flex flex-col items-center pt-3 pb-2 transition-colors rounded-t-2xl hover:bg-amber-50 w-full"
+                  className="flex flex-col items-center pt-3 pb-2 w-full hover:opacity-70 transition-opacity"
                 >
-                  <span
-                    className="text-xs font-medium uppercase tracking-wide"
-                    style={{ color: todayDay ? "#D97706" : "#B0A090" }}
-                  >
+                  <span style={{
+                    fontFamily: "var(--font-sans)",
+                    fontSize: 10,
+                    fontWeight: 600,
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                    color: todayDay ? "var(--accent)" : "var(--ink-faint)",
+                  }}>
                     {weekday}
                   </span>
-                  <span
-                    className="text-lg font-semibold mt-0.5"
-                    style={{
-                      color: todayDay ? "#D97706" : "#7C3D1A",
-                      fontFamily: "Georgia, serif",
-                    }}
-                  >
+                  <span style={{
+                    fontFamily: "var(--font-serif)",
+                    fontSize: 22,
+                    fontWeight: todayDay ? 700 : 500,
+                    color: todayDay ? "var(--accent)" : "var(--ink)",
+                    lineHeight: 1.1,
+                  }}>
                     {dayNum}
                   </span>
                 </button>
 
-                {/* Stacked charm events */}
-                <div className="flex-1 pb-2 flex flex-col overflow-y-auto">
-                  {dayEvents.map((event) => (
-                    <EventPill
-                      key={event.id}
-                      event={event}
-                      onDelete={onDeleteEvent}
-                      stacked
-                    />
-                  ))}
+                {/* Events as scrapbook cards */}
+                <div className="flex-1 flex flex-col gap-2 px-1.5 pb-2 overflow-y-auto items-center">
+                  {dayEvents.length === 0 && (
+                    <button
+                      onClick={() => onDayClick(day)}
+                      className="w-full mt-1 rounded-xl py-1 opacity-0 hover:opacity-100 transition-opacity text-center"
+                      style={{ fontSize: 11, color: "var(--ink-faint)", fontFamily: "var(--font-hand)" }}
+                    >
+                      + add
+                    </button>
+                  )}
+                  {dayEvents.map((event) => {
+                    const deg = tilt(event.id);
+                    const col = cardColor(event.id);
+                    return (
+                      <WeekEventCard
+                        key={event.id}
+                        event={event}
+                        deg={deg}
+                        bg={col.bg}
+                        ink={col.ink}
+                        onDelete={onDeleteEvent}
+                        onAdd={() => onDayClick(day)}
+                      />
+                    );
+                  })}
+                  {dayEvents.length > 0 && (
+                    <button
+                      onClick={() => onDayClick(day)}
+                      className="mt-0.5 rounded-lg px-3 py-0.5 opacity-0 hover:opacity-80 transition-opacity"
+                      style={{ fontSize: 11, color: "var(--ink-faint)", fontFamily: "var(--font-hand)", background: "rgba(180,140,90,0.1)" }}
+                    >
+                      + add
+                    </button>
+                  )}
                 </div>
-
-                {/* Add button */}
-                <button
-                  onClick={() => onDayClick(day)}
-                  className="mx-1.5 mb-1.5 rounded-lg py-1 text-xs opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center"
-                  style={{ background: "#F5EFE6", color: "#B0A090" }}
-                  title={`Add to ${weekday}`}
-                >
-                  + add
-                </button>
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* On the horizon strip */}
-      {horizonEvents.length > 0 && (
-        <div
-          className="flex-shrink-0 px-5 pt-3 pb-6"
-          style={{ borderTop: "1px solid #F0EBE0" }}
-        >
-          <p
-            className="mb-2.5"
-            style={{
-              color: "#8B7355",
-              fontFamily: "Georgia, serif",
+      {/* On the horizon */}
+      <div className="flex-shrink-0" style={{ borderTop: "1.5px dashed rgba(180,140,90,0.3)" }}>
+        {horizonEvents.length > 0 ? (
+          <div className="px-5 pt-3 pb-4">
+            <p style={{
+              fontFamily: "var(--font-hand)",
+              fontSize: 17,
+              color: "var(--ink-muted)",
+              marginBottom: 8,
               fontStyle: "italic",
-              fontSize: 15,
-              fontWeight: 600,
-            }}
-          >
-            on the horizon
-          </p>
-          <div className="flex gap-2 overflow-x-auto pb-1">
-            {horizonEvents.map((event) => (
-              <div
-                key={event.id}
-                className="flex items-center gap-2.5 rounded-2xl px-3 py-2 flex-shrink-0"
-                style={{
-                  background: "#F5EFE6",
-                  border: "1px solid #E8DDD0",
-                }}
-              >
-                <CharmIcon charmId={event.charmId} size={24} />
-                <div className="flex flex-col">
-                  <span
-                    className="text-sm font-medium whitespace-nowrap leading-snug"
-                    style={{ color: "#7C3D1A" }}
+            }}>
+              on the horizon
+            </p>
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              {horizonEvents.map((event) => {
+                const col = cardColor(event.id);
+                return (
+                  <div
+                    key={event.id}
+                    className="flex items-center gap-2 rounded-xl px-3 py-2 flex-shrink-0"
+                    style={{
+                      background: col.bg,
+                      boxShadow: "var(--shadow-warm)",
+                    }}
                   >
-                    {event.title}
-                  </span>
-                  <span
-                    className="text-xs whitespace-nowrap leading-snug"
-                    style={{ color: "#B0A090" }}
-                  >
-                    {relativeDate(event.date)}
-                  </span>
-                </div>
-              </div>
-            ))}
+                    <CharmIcon charmId={event.charmId} size={26} />
+                    <div className="flex flex-col">
+                      <span style={{ fontFamily: "var(--font-sans)", fontSize: 12, fontWeight: 500, color: col.ink, whiteSpace: "nowrap" }}>
+                        {event.title}
+                      </span>
+                      <span style={{ fontFamily: "var(--font-hand)", fontSize: 13, color: "var(--ink-muted)", whiteSpace: "nowrap" }}>
+                        {relativeDate(event.date)}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      )}
+        ) : (
+          <p className="px-5 py-3" style={{ fontFamily: "var(--font-hand)", fontSize: 15, color: "var(--ink-faint)", fontStyle: "italic" }}>
+            nothing on the horizon yet — add something to look forward to ♡
+          </p>
+        )}
+      </div>
+
     </div>
   );
+}
+
+function WeekEventCard({
+  event,
+  deg,
+  bg,
+  ink,
+  onDelete,
+}: {
+  event: DawdlyEvent;
+  deg: number;
+  bg: string;
+  ink: string;
+  onDelete: (id: string) => void;
+  onAdd: () => void;
+}) {
+  return (
+    <div
+      className="group relative flex flex-col items-center rounded-xl pb-2 pt-2 px-1 w-full"
+      style={{
+        background: bg,
+        transform: `rotate(${deg}deg)`,
+        boxShadow: "0 2px 8px rgba(74,61,49,0.12), 0 1px 3px rgba(74,61,49,0.08)",
+        maxWidth: 110,
+      }}
+    >
+      <CharmIcon charmId={event.charmId} size={64} />
+      <p
+        className="text-center mt-1 w-full"
+        style={{
+          fontFamily: "var(--font-hand)",
+          fontSize: 13,
+          color: ink,
+          lineHeight: 1.25,
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
+          overflow: "hidden",
+        }}
+      >
+        {event.title}
+      </p>
+      {event.startTime && (
+        <p style={{ fontFamily: "var(--font-hand)", fontSize: 11, color: "var(--ink-faint)", marginTop: 1 }}>
+          {formatTime(event.startTime)}
+        </p>
+      )}
+      <button
+        onClick={() => onDelete(event.id)}
+        className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity rounded-full w-4 h-4 flex items-center justify-center"
+        style={{ background: "rgba(74,61,49,0.15)", color: "var(--ink-muted)", fontSize: 12, lineHeight: 1 }}
+        title="Remove"
+      >
+        ×
+      </button>
+    </div>
+  );
+}
+
+function formatTime(t: string): string {
+  const [h, m] = t.split(":").map(Number);
+  const period = h >= 12 ? "pm" : "am";
+  return `${h % 12 || 12}:${String(m).padStart(2, "0")} ${period}`;
 }

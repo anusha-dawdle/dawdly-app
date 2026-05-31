@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import type { DawdlyEvent, CharmId } from "@/lib/types";
-import { CHARM_LIST } from "@/lib/charms";
+import { useState, useMemo } from "react";
+import type { DawdlyEvent } from "@/lib/types";
+import { CHARM_LIST, DEFAULT_CHARM_ID, suggestCharm, type CharmId } from "@/lib/charms";
 import CharmIcon from "./CharmIcon";
 
 interface AddEventModalProps {
@@ -11,159 +11,245 @@ interface AddEventModalProps {
   onClose: () => void;
 }
 
-export default function AddEventModal({
-  defaultDate,
-  onSave,
-  onClose,
-}: AddEventModalProps) {
-  const [title, setTitle] = useState("");
-  const [date, setDate] = useState(defaultDate);
-  const [startTime, setStartTime] = useState("");
-  const [selectedCharm, setSelectedCharm] = useState<CharmId>("coffee");
-  const [note, setNote] = useState("");
+export default function AddEventModal({ defaultDate, onSave, onClose }: AddEventModalProps) {
+  const [title, setTitle]               = useState("");
+  const [date, setDate]                 = useState(defaultDate);
+  const [startTime, setStartTime]       = useState("");
+  const [note, setNote]                 = useState("");
+  const [selectedCharm, setSelectedCharm] = useState<CharmId>(DEFAULT_CHARM_ID);
+  const [userPickedCharm, setUserPickedCharm] = useState(false);
+  const [charmSearch, setCharmSearch]   = useState("");
+
+  // Auto-suggest based on title unless user has explicitly picked
+  const suggested = useMemo(() => suggestCharm(title), [title]);
+  const effectiveCharm: CharmId = userPickedCharm ? selectedCharm : (suggested ?? DEFAULT_CHARM_ID);
+
+  const filteredCharms = useMemo(() => {
+    const q = charmSearch.toLowerCase();
+    if (!q) return CHARM_LIST;
+    return CHARM_LIST.filter(
+      (c) => c.label.toLowerCase().includes(q) || c.keywords.some((k) => k.includes(q))
+    );
+  }, [charmSearch]);
+
+  function pickCharm(id: CharmId) {
+    setSelectedCharm(id);
+    setUserPickedCharm(true);
+  }
 
   function handleSave() {
     if (!title.trim()) return;
-    const event: DawdlyEvent = {
+    onSave({
       id: crypto.randomUUID(),
       title: title.trim(),
-      charmId: selectedCharm,
+      charmId: effectiveCharm,
       date,
       startTime: startTime || undefined,
       note: note.trim() || undefined,
-    };
-    onSave(event);
+    });
     onClose();
   }
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: "rgba(0,0,0,0.25)", backdropFilter: "blur(4px)" }}
+      style={{ background: "rgba(74,61,49,0.35)", backdropFilter: "blur(5px)" }}
+      onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div
-        className="w-full max-w-md rounded-3xl p-6 shadow-2xl"
-        style={{ background: "#FFFDF9", border: "1.5px solid #F0EBE0" }}
+        className="w-full max-w-md rounded-3xl overflow-hidden"
+        style={{
+          background: "var(--paper)",
+          border: "1px solid rgba(180,140,90,0.25)",
+          boxShadow: "0 8px 40px rgba(74,61,49,0.2)",
+          maxHeight: "90vh",
+          display: "flex",
+          flexDirection: "column",
+        }}
       >
-        <h2
-          className="text-xl font-semibold mb-5"
-          style={{ color: "#7C3D1A", fontFamily: "Georgia, serif" }}
-        >
-          Something to look forward to
-        </h2>
-
-        {/* Charm picker */}
-        <div className="mb-4">
-          <label
-            className="block text-sm mb-2"
-            style={{ color: "#8B7355" }}
-          >
-            Pick a charm
-          </label>
-          <div className="grid grid-cols-8 gap-1.5">
-            {CHARM_LIST.map((charm) => (
-              <button
-                key={charm.id}
-                onClick={() => setSelectedCharm(charm.id)}
-                title={charm.label}
-                className="rounded-xl p-0.5 transition-all"
-                style={{
-                  background:
-                    selectedCharm === charm.id ? "#FDE68A" : "transparent",
-                  outline:
-                    selectedCharm === charm.id
-                      ? "2px solid #D97706"
-                      : "2px solid transparent",
-                }}
-              >
-                <CharmIcon charmId={charm.id} size={36} />
-              </button>
-            ))}
-          </div>
+        {/* Header */}
+        <div className="px-6 pt-5 pb-3 flex-shrink-0">
+          <h2 style={{ fontFamily: "var(--font-serif)", fontSize: 22, fontWeight: 600, color: "var(--ink)" }}>
+            something to look forward to
+          </h2>
         </div>
 
-        {/* Title */}
-        <div className="mb-3">
+        <div className="overflow-y-auto flex-1 px-6 pb-2">
+          {/* Title */}
+          <div className="mb-4">
+            <input
+              type="text"
+              placeholder="what are you looking forward to?"
+              value={title}
+              onChange={(e) => { setTitle(e.target.value); setUserPickedCharm(false); }}
+              onKeyDown={(e) => e.key === "Enter" && handleSave()}
+              autoFocus
+              className="w-full outline-none bg-transparent"
+              style={{
+                fontFamily: "var(--font-hand)",
+                fontSize: 18,
+                color: "var(--ink)",
+                borderBottom: "1.5px solid rgba(180,140,90,0.4)",
+                paddingBottom: 6,
+              }}
+            />
+          </div>
+
+          {/* Selected charm preview + auto-suggest label */}
+          <div className="flex items-center gap-3 mb-3">
+            <div
+              className="flex-shrink-0 rounded-xl p-2"
+              style={{ background: "rgba(221,130,38,0.1)", border: "1.5px solid rgba(221,130,38,0.25)" }}
+            >
+              <CharmIcon charmId={effectiveCharm} size={52} />
+            </div>
+            <div>
+              {suggested && !userPickedCharm && (
+                <p style={{ fontFamily: "var(--font-hand)", fontSize: 13, color: "var(--ink-muted)", fontStyle: "italic" }}>
+                  suggested for "{title}" — or pick one below
+                </p>
+              )}
+              {(!suggested || userPickedCharm) && (
+                <p style={{ fontFamily: "var(--font-hand)", fontSize: 13, color: "var(--ink-muted)" }}>
+                  {CHARM_LIST.find((c) => c.id === effectiveCharm)?.label ?? "Star"}
+                </p>
+              )}
+              {userPickedCharm && (
+                <button
+                  onClick={() => setUserPickedCharm(false)}
+                  style={{ fontFamily: "var(--font-hand)", fontSize: 12, color: "var(--marker)", textDecoration: "underline" }}
+                >
+                  reset to suggested
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Charm search */}
           <input
             type="text"
-            placeholder="What are you looking forward to?"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSave()}
-            className="w-full rounded-xl px-4 py-3 text-base outline-none"
+            placeholder="search charms..."
+            value={charmSearch}
+            onChange={(e) => setCharmSearch(e.target.value)}
+            className="w-full rounded-xl px-3 py-2 outline-none mb-2"
             style={{
-              background: "#FFF8F0",
-              border: "1.5px solid #E8DDD0",
-              color: "#7C3D1A",
+              fontFamily: "var(--font-hand)",
+              fontSize: 14,
+              color: "var(--ink)",
+              background: "rgba(180,140,90,0.08)",
+              border: "1px solid rgba(180,140,90,0.2)",
             }}
-            autoFocus
           />
-        </div>
 
-        {/* Date + Time row */}
-        <div className="flex gap-2 mb-3">
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="flex-1 rounded-xl px-3 py-2.5 text-sm outline-none"
+          {/* Charm grid */}
+          <div
+            className="grid mb-4"
             style={{
-              background: "#FFF8F0",
-              border: "1.5px solid #E8DDD0",
-              color: "#7C3D1A",
+              gridTemplateColumns: "repeat(7, 1fr)",
+              gap: 4,
+              maxHeight: 220,
+              overflowY: "auto",
             }}
-          />
-          <input
-            type="time"
-            value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
-            className="w-32 rounded-xl px-3 py-2.5 text-sm outline-none"
-            style={{
-              background: "#FFF8F0",
-              border: "1.5px solid #E8DDD0",
-              color: "#7C3D1A",
-            }}
-          />
-        </div>
+          >
+            {filteredCharms.map((charm) => {
+              const isSelected = charm.id === effectiveCharm;
+              return (
+                <button
+                  key={charm.id}
+                  onClick={() => pickCharm(charm.id)}
+                  title={charm.label}
+                  className="rounded-xl p-0.5 transition-all"
+                  style={{
+                    background: isSelected ? "rgba(221,130,38,0.15)" : "transparent",
+                    outline: isSelected ? "2px solid var(--accent)" : "2px solid transparent",
+                    outlineOffset: 1,
+                  }}
+                >
+                  <CharmIcon charmId={charm.id} size={36} />
+                </button>
+              );
+            })}
+            {filteredCharms.length === 0 && (
+              <p className="col-span-7 text-center py-4" style={{ fontFamily: "var(--font-hand)", fontSize: 14, color: "var(--ink-faint)" }}>
+                no charms match "{charmSearch}"
+              </p>
+            )}
+          </div>
 
-        {/* Note */}
-        <div className="mb-5">
+          {/* Date + Time */}
+          <div className="flex gap-2 mb-3">
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="flex-1 rounded-xl px-3 py-2 outline-none"
+              style={{
+                fontFamily: "var(--font-hand)",
+                fontSize: 15,
+                color: "var(--ink)",
+                background: "rgba(180,140,90,0.08)",
+                border: "1px solid rgba(180,140,90,0.2)",
+              }}
+            />
+            <input
+              type="time"
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
+              className="w-32 rounded-xl px-3 py-2 outline-none"
+              style={{
+                fontFamily: "var(--font-hand)",
+                fontSize: 15,
+                color: "var(--ink)",
+                background: "rgba(180,140,90,0.08)",
+                border: "1px solid rgba(180,140,90,0.2)",
+              }}
+            />
+          </div>
+
+          {/* Note */}
           <textarea
-            placeholder="Any notes? (optional)"
+            placeholder="any notes? (optional)"
             value={note}
             onChange={(e) => setNote(e.target.value)}
             rows={2}
-            className="w-full rounded-xl px-4 py-2.5 text-sm outline-none resize-none"
+            className="w-full rounded-xl px-3 py-2 outline-none resize-none mb-4"
             style={{
-              background: "#FFF8F0",
-              border: "1.5px solid #E8DDD0",
-              color: "#7C3D1A",
+              fontFamily: "var(--font-hand)",
+              fontSize: 15,
+              color: "var(--ink)",
+              background: "rgba(180,140,90,0.08)",
+              border: "1px solid rgba(180,140,90,0.2)",
             }}
           />
         </div>
 
         {/* Buttons */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 px-6 pb-5 flex-shrink-0">
           <button
             onClick={onClose}
-            className="flex-1 rounded-xl py-2.5 text-sm font-medium transition-colors"
+            className="flex-1 rounded-xl py-2.5"
             style={{
-              background: "#F5EFE6",
-              color: "#8B7355",
+              fontFamily: "var(--font-hand)",
+              fontSize: 16,
+              background: "rgba(180,140,90,0.12)",
+              color: "var(--ink-muted)",
             }}
           >
-            Cancel
+            cancel
           </button>
           <button
             onClick={handleSave}
             disabled={!title.trim()}
-            className="flex-1 rounded-xl py-2.5 text-sm font-semibold transition-all"
+            className="flex-1 rounded-xl py-2.5 transition-all"
             style={{
-              background: title.trim() ? "#F59E0B" : "#E8DDD0",
-              color: title.trim() ? "#3B1A08" : "#B0A090",
+              fontFamily: "var(--font-hand)",
+              fontSize: 16,
+              fontWeight: 600,
+              background: title.trim() ? "var(--accent)" : "rgba(180,140,90,0.15)",
+              color: title.trim() ? "#fff" : "var(--ink-faint)",
             }}
           >
-            Add to my week ✨
+            add to my calendar ✦
           </button>
         </div>
       </div>

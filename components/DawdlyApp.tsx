@@ -58,77 +58,74 @@ export default function DawdlyApp() {
   }
 
   return (
-    <div
-      className="flex flex-col h-screen overflow-hidden"
-      style={{ background: "#FFFDF9", fontFamily: "system-ui, sans-serif" }}
-    >
+    <div className="flex flex-col h-screen overflow-hidden" style={{ background: "var(--paper)" }}>
       {/* Header */}
       <header
         className="grid grid-cols-3 items-center px-6 py-3 flex-shrink-0"
-        style={{ borderBottom: "1px solid #F0EBE0" }}
+        style={{ borderBottom: "1.5px dashed rgba(180,140,90,0.3)" }}
       >
-        <div className="flex items-center gap-2">
-          <span
-            className="text-2xl font-bold"
-            style={{ color: "#D97706", fontFamily: "Georgia, serif" }}
-          >
+        {/* Wordmark */}
+        <div className="flex items-center gap-1.5">
+          <span style={{ fontFamily: "var(--font-serif)", fontSize: 26, fontWeight: 700, color: "var(--accent)", letterSpacing: "-0.01em" }}>
             dawdly
           </span>
-          <span className="text-lg">✦</span>
+          <span style={{ color: "var(--marker)", fontSize: 16 }}>✦</span>
         </div>
 
         {/* View switcher */}
         <div className="flex justify-center">
-        <div
-          className="flex rounded-xl overflow-hidden"
-          style={{ background: "#F5EFE6", padding: 2 }}
-        >
-          {(["day", "week", "month"] as CalendarView[]).map((v) => (
-            <button
-              key={v}
-              onClick={() => setView(v)}
-              className="px-4 py-1.5 text-sm font-medium rounded-lg capitalize transition-colors"
-              style={{
-                background: view === v ? "#FFFDF9" : "transparent",
-                color: view === v ? "#D97706" : "#B0A090",
-                boxShadow: view === v ? "0 1px 4px rgba(0,0,0,0.08)" : "none",
-              }}
-            >
-              {v}
-            </button>
-          ))}
-        </div>
+          <div
+            className="flex rounded-xl overflow-hidden"
+            style={{ background: "rgba(180,140,90,0.12)", padding: 2 }}
+          >
+            {(["day", "week", "month"] as CalendarView[]).map((v) => (
+              <button
+                key={v}
+                onClick={() => setView(v)}
+                className="px-4 py-1.5 rounded-lg capitalize transition-colors"
+                style={{
+                  fontFamily: "var(--font-hand)",
+                  fontSize: 15,
+                  background: view === v ? "var(--paper)" : "transparent",
+                  color: view === v ? "var(--accent)" : "var(--ink-muted)",
+                  boxShadow: view === v ? "0 1px 4px rgba(74,61,49,0.1)" : "none",
+                }}
+              >
+                {v}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Nav + add */}
         <div className="flex items-center gap-2 justify-end">
           <button
             onClick={handleToday}
-            className="px-3 py-1.5 rounded-xl text-sm font-medium"
-            style={{ background: "#F5EFE6", color: "#8B7355" }}
+            className="px-3 py-1.5 rounded-xl"
+            style={{ fontFamily: "var(--font-hand)", fontSize: 15, background: "rgba(180,140,90,0.12)", color: "var(--ink-muted)" }}
           >
-            Today
+            today
           </button>
           <button
             onClick={handlePrev}
             className="w-8 h-8 rounded-xl flex items-center justify-center"
-            style={{ background: "#F5EFE6", color: "#8B7355" }}
+            style={{ background: "rgba(180,140,90,0.12)", color: "var(--ink-muted)", fontSize: 18 }}
           >
             ‹
           </button>
           <button
             onClick={handleNext}
             className="w-8 h-8 rounded-xl flex items-center justify-center"
-            style={{ background: "#F5EFE6", color: "#8B7355" }}
+            style={{ background: "rgba(180,140,90,0.12)", color: "var(--ink-muted)", fontSize: 18 }}
           >
             ›
           </button>
           <button
             onClick={() => openAddModal(anchor)}
-            className="px-4 py-1.5 rounded-xl text-sm font-semibold transition-colors"
-            style={{ background: "#F59E0B", color: "#3B1A08" }}
+            className="px-4 py-1.5 rounded-xl transition-all"
+            style={{ fontFamily: "var(--font-hand)", fontSize: 15, fontWeight: 600, background: "var(--accent)", color: "#fff" }}
           >
-            + Add
+            + add
           </button>
         </div>
       </header>
