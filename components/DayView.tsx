@@ -100,7 +100,7 @@ export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEv
                 <div className="flex gap-5 items-start">
                   {/* Personal column */}
                   <div className="flex-1 flex flex-col gap-4 min-w-0">
-                    <p style={{ fontFamily: "var(--font-hand)", fontSize: 16, color: "var(--ink-muted)" }}>
+                    <p style={{ fontFamily: "var(--font-hand)", fontSize: 16, color: "var(--ink-muted)", fontStyle: "italic" }}>
                       personal
                     </p>
                     {personalEvents.map((event) => (
@@ -113,7 +113,7 @@ export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEv
 
                   {/* Work column */}
                   <div className="flex-1 flex flex-col gap-3 min-w-0">
-                    <p style={{ fontFamily: "var(--font-hand)", fontSize: 16, color: "var(--ink-muted)" }}>
+                    <p style={{ fontFamily: "var(--font-hand)", fontSize: 16, color: "var(--ink-muted)", fontStyle: "italic" }}>
                       work
                     </p>
                     {workEvents.map((event) => (
