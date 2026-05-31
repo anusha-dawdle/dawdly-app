@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { CalendarView } from "@/lib/types";
-import { useEvents } from "@/lib/store";
+import { useEvents, useCharmSize } from "@/lib/store";
 import { today, addDays, getWeekDays, startOfMonth } from "@/lib/dates";
 import WeekView from "./WeekView";
 import MonthView from "./MonthView";
@@ -18,6 +18,7 @@ export default function DawdlyApp() {
   const [editingEvent, setEditingEvent] = useState<import("@/lib/types").DawdlyEvent | null>(null);
 
   const { events, addEvent, deleteEvent, updateEvent, getEventsForDate } = useEvents();
+  const { charmSize, increase, decrease, atMin, atMax } = useCharmSize();
 
   function openAddModal(date: string) {
     setEditingEvent(null);
@@ -113,6 +114,30 @@ export default function DawdlyApp() {
 
         {/* Nav + add */}
         <div className="flex items-center gap-2 justify-end">
+          {/* Charm size control — week and day only */}
+          {(view === "week" || view === "day") && (
+            <div className="flex items-center gap-0.5 rounded-xl overflow-hidden" style={{ background: "rgba(180,140,90,0.12)" }}>
+              <button
+                onClick={decrease}
+                disabled={atMin}
+                className="w-7 h-8 flex items-center justify-center transition-opacity"
+                style={{ fontSize: 18, color: atMin ? "var(--ink-faint)" : "var(--ink-muted)", fontFamily: "var(--font-sans)" }}
+                title="Smaller charms"
+              >
+                −
+              </button>
+              <span style={{ fontSize: 13, color: "var(--ink-faint)", userSelect: "none" }}>✦</span>
+              <button
+                onClick={increase}
+                disabled={atMax}
+                className="w-7 h-8 flex items-center justify-center transition-opacity"
+                style={{ fontSize: 18, color: atMax ? "var(--ink-faint)" : "var(--ink-muted)", fontFamily: "var(--font-sans)" }}
+                title="Larger charms"
+              >
+                +
+              </button>
+            </div>
+          )}
           <button
             onClick={handleToday}
             className="px-3 py-1.5 rounded-xl"
@@ -154,6 +179,7 @@ export default function DawdlyApp() {
             onDayClick={handleDayClick}
             onDeleteEvent={deleteEvent}
             onEventClick={openEditModal}
+            charmSize={charmSize}
           />
         )}
         {view === "month" && (
@@ -170,6 +196,7 @@ export default function DawdlyApp() {
             onAddClick={() => openAddModal(anchor)}
             onDeleteEvent={deleteEvent}
             onEventClick={openEditModal}
+            charmSize={charmSize}
           />
         )}
       </main>

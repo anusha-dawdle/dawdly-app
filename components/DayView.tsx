@@ -10,6 +10,7 @@ interface DayViewProps {
   onAddClick: () => void;
   onDeleteEvent: (id: string) => void;
   onEventClick: (event: DawdlyEvent) => void;
+  charmSize: number;
 }
 
 const CARD_COLORS = [
@@ -26,7 +27,7 @@ function cardColor(id: string) {
 }
 
 
-export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEvent, onEventClick }: DayViewProps) {
+export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEvent, onEventClick, charmSize }: DayViewProps) {
   const { weekday, day } = formatDayHeader(date);
   const monthLabel = formatMonthYear(date);
   const events = getEventsForDate(date);
@@ -104,7 +105,7 @@ export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEv
                       personal
                     </p>
                     {personalEvents.map((event) => (
-                      <DayEventCard key={event.id} event={event} onDelete={onDeleteEvent} onClick={onEventClick} />
+                      <DayEventCard key={event.id} event={event} onDelete={onDeleteEvent} onClick={onEventClick} charmSize={charmSize} />
                     ))}
                   </div>
 
@@ -117,14 +118,14 @@ export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEv
                       work
                     </p>
                     {workEvents.map((event) => (
-                      <DayEventCard key={event.id} event={event} onDelete={onDeleteEvent} onClick={onEventClick} />
+                      <DayEventCard key={event.id} event={event} onDelete={onDeleteEvent} onClick={onEventClick} charmSize={charmSize} />
                     ))}
                   </div>
                 </div>
               ) : (
                 <div className="flex flex-col gap-4 w-full">
                   {events.map((event) => (
-                    <DayEventCard key={event.id} event={event} onDelete={onDeleteEvent} onClick={onEventClick} />
+                    <DayEventCard key={event.id} event={event} onDelete={onDeleteEvent} onClick={onEventClick} charmSize={charmSize} />
                   ))}
                 </div>
               )}
@@ -150,7 +151,7 @@ export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEv
   );
 }
 
-function DayEventCard({ event, onDelete, onClick }: { event: DawdlyEvent; onDelete: (id: string) => void; onClick: (event: DawdlyEvent) => void }) {
+function DayEventCard({ event, onDelete, onClick, charmSize }: { event: DawdlyEvent; onDelete: (id: string) => void; onClick: (event: DawdlyEvent) => void; charmSize: number }) {
   const isWork = event.kind === "work";
 
   if (isWork) {
@@ -216,7 +217,7 @@ function DayEventCard({ event, onDelete, onClick }: { event: DawdlyEvent; onDele
         boxShadow: "0 3px 14px rgba(74,61,49,0.13), 0 1px 4px rgba(74,61,49,0.08)",
       }}
     >
-      <CharmIcon charmId={event.charmId} size={160} className="flex-shrink-0" />
+      <CharmIcon charmId={event.charmId} size={charmSize} className="flex-shrink-0" />
 
       {/* Text */}
       <div className="flex-1 min-w-0">

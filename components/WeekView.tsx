@@ -17,6 +17,7 @@ interface WeekViewProps {
   onDayClick: (date: string) => void;
   onDeleteEvent: (id: string) => void;
   onEventClick: (event: DawdlyEvent) => void;
+  charmSize: number;
 }
 
 
@@ -40,6 +41,7 @@ export default function WeekView({
   onDayClick,
   onDeleteEvent,
   onEventClick,
+  charmSize,
 }: WeekViewProps) {
   const days = getWeekDays(anchor);
   const weekEnd = days[6];
@@ -149,7 +151,7 @@ export default function WeekView({
                         onDelete={onDeleteEvent}
                         onClick={onEventClick}
                         onAdd={() => onDayClick(day)}
-                        iconSize={160}
+                        iconSize={charmSize}
                         overlap={idx > 0 && !prevIsWork}
                         afterWork={prevIsWork}
                         zIndex={dayEvents.length - idx}
