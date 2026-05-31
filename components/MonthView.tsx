@@ -126,7 +126,7 @@ export default function MonthView({ anchor, getEventsForDate, onDayClick }: Mont
               {/* Charm icons only */}
               <div className="flex flex-wrap gap-0.5">
                 {visible.map((event) => (
-                  <CharmIcon key={event.id} charmId={event.charmId} size={36} />
+                  <CharmIcon key={event.id} charmId={event.charmId} size={48} />
                 ))}
                 {overflow > 0 && (
                   <span className="flex items-center" style={{ fontFamily: "var(--font-hand)", fontSize: 11, color: "var(--ink-faint)" }}>
