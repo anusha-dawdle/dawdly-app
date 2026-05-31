@@ -1,5 +1,7 @@
 export type CharmId =
   // — regular charms (shown in picker) —
+  | "book"
+  | "mic"
   | "babies"
   | "baking"
   | "balloons"
@@ -81,6 +83,8 @@ export function pickExtraCharm(seed: string): CharmId {
 
 export const CHARMS: Record<CharmId, Charm> = {
   // Regular charms
+  "book":          { id: "book",          label: "Book Club",    file: "book.png",          keywords: ["book", "read", "reading", "library", "bookclub", "book club", "literature", "novel"] },
+  "mic":           { id: "mic",           label: "Concert",      file: "mic.png",           keywords: ["concert", "show", "music", "mic", "karaoke", "singing", "performance", "gig", "live"] },
   "babies":        { id: "babies",        label: "Baby Shower",  file: "babies.png",        keywords: ["baby", "shower", "newborn", "infant", "nursery"] },
   "baking":        { id: "baking",        label: "Baking",       file: "baking.png",         keywords: ["baking", "bake", "bread", "pastry", "cookies", "kitchen", "cake"] },
   "balloons":      { id: "balloons",      label: "Balloons",     file: "balloons.png",       keywords: ["balloon", "party", "celebration", "birthday"] },
@@ -133,6 +137,8 @@ export const CHARMS: Record<CharmId, Charm> = {
 
 export const CHARM_LIST: Charm[] = [
   // Only regular charms in the picker
+  CHARMS["book"],
+  CHARMS["mic"],
   CHARMS["babies"],
   CHARMS["baking"],
   CHARMS["balloons"],
@@ -174,8 +180,8 @@ export const CHARM_CATEGORIES: { label: string; ids: CharmId[] }[] = [
   { label: "Travel & Outdoors",  ids: ["plane", "roadtrip-van", "car", "boat", "beach", "mountains", "camping-tent", "hiking-boots"] },
   { label: "Sports & Fitness",   ids: ["gym", "yoga", "basketball", "football", "soccer", "tennis"] },
   { label: "Celebrations",       ids: ["balloons", "birthday-cake", "gifts", "graduation-cap", "wedding-ring"] },
-  { label: "Arts & Creativity",  ids: ["easel", "camera"] },
-  { label: "Social & Lifestyle", ids: ["friends", "shopping-bags", "dress"] },
+  { label: "Arts & Creativity",  ids: ["easel", "camera", "book"] },
+  { label: "Social & Lifestyle", ids: ["friends", "mic", "shopping-bags", "dress"] },
   { label: "Home & Family",      ids: ["new-house", "babies", "cat-and-dog"] },
   { label: "Wellness",           ids: ["spa"] },
 ];
