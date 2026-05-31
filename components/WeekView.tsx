@@ -46,7 +46,7 @@ export default function WeekView({
   const days = getWeekDays(anchor);
   const weekEnd = days[6];
   const horizonEvents = events
-    .filter((e) => e.date > weekEnd)
+    .filter((e) => e.date > weekEnd && e.kind !== "work")
     .sort((a, b) => a.date.localeCompare(b.date))
     .slice(0, 12);
 
