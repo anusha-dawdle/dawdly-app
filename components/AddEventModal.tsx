@@ -20,7 +20,25 @@ export default function AddEventModal({ defaultDate, editEvent, onSave, onClose 
   const [kind, setKind]                 = useState<"personal" | "work">(editEvent?.kind ?? "personal");
   const [title, setTitle]               = useState(editEvent?.title ?? "");
   const [date, setDate]                 = useState(editEvent?.date ?? defaultDate);
+  const [endDate, setEndDate]           = useState(() => {
+    const startDate = editEvent?.date ?? defaultDate;
+    const st = editEvent?.startTime ?? "";
+    const et = editEvent?.endTime ?? "";
+    // Only trust a stored endDate if it differs from startDate — otherwise it
+    // may have been saved before smart defaulting existed and could be wrong.
+    if (editEvent?.endDate && editEvent.endDate !== startDate) return editEvent.endDate;
+    if (st && et && et < st) {
+      const d = new Date(startDate + "T00:00:00");
+      d.setDate(d.getDate() + 1);
+      return d.toISOString().slice(0, 10);
+    }
+    return startDate;
+  });
+  const [endDateManual, setEndDateManual] = useState(
+    !!editEvent?.endDate && editEvent.endDate !== editEvent.date
+  );
   const [startTime, setStartTime]       = useState(editEvent?.startTime ?? "");
+  const [endTime, setEndTime]           = useState(editEvent?.endTime ?? "");
   const [note, setNote]                 = useState(editEvent?.note ?? "");
   const [selectedCharm, setSelectedCharm] = useState<CharmId>(
     editEvent ? resolveCharmId(editEvent.charmId) : DEFAULT_CHARM_ID
@@ -47,11 +65,35 @@ export default function AddEventModal({ defaultDate, editEvent, onSave, onClose 
     setUserPickedCharm(true);
   }
 
+  function smartEndDate(startDate: string, st: string, et: string): string {
+    if (st && et && et < st) {
+      const d = new Date(startDate + "T00:00:00");
+      d.setDate(d.getDate() + 1);
+      return d.toISOString().slice(0, 10);
+    }
+    return startDate;
+  }
+
+  function handleStartDateChange(val: string) {
+    setDate(val);
+    if (!endDateManual) setEndDate(smartEndDate(val, startTime, endTime));
+  }
+
+  function handleStartTimeChange(val: string) {
+    setStartTime(val);
+    if (!endDateManual) setEndDate(smartEndDate(date, val, endTime));
+  }
+
+  function handleEndTimeChange(val: string) {
+    setEndTime(val);
+    if (!endDateManual) setEndDate(smartEndDate(date, startTime, val));
+  }
+
   function handleSave() {
-    if (!title.trim()) return;
+    if (!title.trim() || !startTime || !endTime) return;
     const id = editEvent?.id ?? crypto.randomUUID();
     const charmId = kind === "work" ? "star" : (userPickedCharm ? selectedCharm : (suggested ?? pickExtraCharm(id)));
-    onSave({ id, title: title.trim(), kind, charmId, date, startTime: startTime || undefined, note: note.trim() || undefined });
+    onSave({ id, title: title.trim(), kind, charmId, date, endDate, startTime, endTime, note: note.trim() || undefined });
     onClose();
   }
 
@@ -213,34 +255,72 @@ export default function AddEventModal({ defaultDate, editEvent, onSave, onClose 
             </>
           )}
 
-          {/* Date + Time */}
-          <div className="flex gap-2 mb-3">
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="flex-1 rounded-xl px-3 py-2 outline-none"
-              style={{
-                fontFamily: "var(--font-hand)",
-                fontSize: 15,
-                color: "var(--ink)",
-                background: "rgba(180,140,90,0.08)",
-                border: "1px solid rgba(180,140,90,0.2)",
-              }}
-            />
-            <input
-              type="time"
-              value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
-              className="w-32 rounded-xl px-3 py-2 outline-none"
-              style={{
-                fontFamily: "var(--font-hand)",
-                fontSize: 15,
-                color: "var(--ink)",
-                background: "rgba(180,140,90,0.08)",
-                border: "1px solid rgba(180,140,90,0.2)",
-              }}
-            />
+          {/* Start date + time */}
+          <div className="mb-2">
+            <label style={{ fontFamily: "var(--font-hand)", fontSize: 12, color: "var(--ink-faint)", display: "block", marginBottom: 4 }}>start</label>
+            <div className="flex gap-2">
+              <input
+                type="date"
+                value={date}
+                onChange={(e) => handleStartDateChange(e.target.value)}
+                className="flex-1 rounded-xl px-3 py-2 outline-none"
+                style={{
+                  fontFamily: "var(--font-hand)",
+                  fontSize: 15,
+                  color: "var(--ink)",
+                  background: "rgba(180,140,90,0.08)",
+                  border: "1px solid rgba(180,140,90,0.2)",
+                }}
+              />
+              <input
+                type="time"
+                value={startTime}
+                onChange={(e) => handleStartTimeChange(e.target.value)}
+                required
+                className="w-32 rounded-xl px-3 py-2 outline-none"
+                style={{
+                  fontFamily: "var(--font-hand)",
+                  fontSize: 15,
+                  color: "var(--ink)",
+                  background: "rgba(180,140,90,0.08)",
+                  border: `1px solid ${startTime ? "rgba(180,140,90,0.2)" : "rgba(221,130,38,0.45)"}`,
+                }}
+              />
+            </div>
+          </div>
+
+          {/* End date + time */}
+          <div className="mb-3">
+            <label style={{ fontFamily: "var(--font-hand)", fontSize: 12, color: "var(--ink-faint)", display: "block", marginBottom: 4 }}>end</label>
+            <div className="flex gap-2">
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => { setEndDate(e.target.value); setEndDateManual(true); }}
+                className="flex-1 rounded-xl px-3 py-2 outline-none"
+                style={{
+                  fontFamily: "var(--font-hand)",
+                  fontSize: 15,
+                  color: "var(--ink)",
+                  background: "rgba(180,140,90,0.08)",
+                  border: "1px solid rgba(180,140,90,0.2)",
+                }}
+              />
+              <input
+                type="time"
+                value={endTime}
+                onChange={(e) => handleEndTimeChange(e.target.value)}
+                required
+                className="w-32 rounded-xl px-3 py-2 outline-none"
+                style={{
+                  fontFamily: "var(--font-hand)",
+                  fontSize: 15,
+                  color: "var(--ink)",
+                  background: "rgba(180,140,90,0.08)",
+                  border: `1px solid ${endTime ? "rgba(180,140,90,0.2)" : "rgba(221,130,38,0.45)"}`,
+                }}
+              />
+            </div>
           </div>
 
           {/* Note */}
@@ -276,14 +356,14 @@ export default function AddEventModal({ defaultDate, editEvent, onSave, onClose 
           </button>
           <button
             onClick={handleSave}
-            disabled={!title.trim()}
+            disabled={!title.trim() || !startTime || !endTime}
             className="flex-1 rounded-xl py-2.5 transition-all"
             style={{
               fontFamily: "var(--font-hand)",
               fontSize: 16,
               fontWeight: 600,
-              background: title.trim() ? "var(--accent)" : "rgba(180,140,90,0.15)",
-              color: title.trim() ? "#fff" : "var(--ink-faint)",
+              background: (title.trim() && startTime && endTime) ? "var(--accent)" : "rgba(180,140,90,0.15)",
+              color: (title.trim() && startTime && endTime) ? "#fff" : "var(--ink-faint)",
             }}
           >
             {isEditing ? "save changes ✦" : kind === "work" ? "add work event" : "add to my calendar ✦"}

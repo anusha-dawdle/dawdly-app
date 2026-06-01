@@ -59,11 +59,9 @@ export default function EventPill({
         >
           {event.title}
         </p>
-        {event.startTime && (
-          <p className="text-xs mt-0.5" style={{ color: "#B0A090" }}>
-            {formatTime(event.startTime)}
-          </p>
-        )}
+        <p className="text-xs mt-0.5" style={{ color: "#B0A090" }}>
+          {formatTime(event.startTime)}
+        </p>
       </div>
       {onDelete && (
         <button

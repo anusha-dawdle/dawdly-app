@@ -12,8 +12,12 @@ function loadEvents(): DawdlyEvent[] {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
     const parsed: DawdlyEvent[] = JSON.parse(raw);
-    // Migrate legacy charmIds to new PNG-based ids
-    return parsed.map((e) => ({ ...e, charmId: resolveCharmId(e.charmId) }));
+    return parsed.map((e) => ({
+      ...e,
+      charmId: resolveCharmId(e.charmId),
+      // Backfill endDate for events saved before it was required
+      endDate: e.endDate ?? e.date,
+    }));
   } catch {
     return [];
   }
@@ -70,38 +74,3 @@ export function useEvents() {
   return { events, addEvent, deleteEvent, updateEvent, getEventsForDate };
 }
 
-const CHARM_SIZE_KEY = "dawdly_charm_size";
-const CHARM_SIZE_MIN = 80;
-const CHARM_SIZE_MAX = 260;
-const CHARM_SIZE_DEFAULT = 160;
-const CHARM_SIZE_STEP = 20;
-
-export function useCharmSize() {
-  const [charmSize, setCharmSize] = useState(CHARM_SIZE_DEFAULT);
-
-  useEffect(() => {
-    const saved = localStorage.getItem(CHARM_SIZE_KEY);
-    if (saved) setCharmSize(Number(saved));
-  }, []);
-
-  const increase = useCallback(() => {
-    setCharmSize((prev) => {
-      const next = Math.min(CHARM_SIZE_MAX, prev + CHARM_SIZE_STEP);
-      localStorage.setItem(CHARM_SIZE_KEY, String(next));
-      return next;
-    });
-  }, []);
-
-  const decrease = useCallback(() => {
-    setCharmSize((prev) => {
-      const next = Math.max(CHARM_SIZE_MIN, prev - CHARM_SIZE_STEP);
-      localStorage.setItem(CHARM_SIZE_KEY, String(next));
-      return next;
-    });
-  }, []);
-
-  const atMin = charmSize <= CHARM_SIZE_MIN;
-  const atMax = charmSize >= CHARM_SIZE_MAX;
-
-  return { charmSize, increase, decrease, atMin, atMax };
-}

@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import type { CalendarView } from "@/lib/types";
-import { useEvents, useCharmSize } from "@/lib/store";
+import { useEvents } from "@/lib/store";
 import { useBreakpoint } from "@/lib/breakpoint";
-import { today, addDays, getWeekDays, startOfMonth } from "@/lib/dates";
+import { today, addDays } from "@/lib/dates";
 import WeekView from "./WeekView";
 import MonthView from "./MonthView";
 import DayView from "./DayView";
 import AddEventModal from "./AddEventModal";
+import GoogleCalendarImport from "./GoogleCalendarImport";
 
 export default function DawdlyApp() {
   const [view, setView] = useState<CalendarView>("week");
@@ -18,7 +19,6 @@ export default function DawdlyApp() {
   const [editingEvent, setEditingEvent] = useState<import("@/lib/types").DawdlyEvent | null>(null);
 
   const { events, addEvent, deleteEvent, updateEvent, getEventsForDate } = useEvents();
-  const { charmSize, increase, decrease, atMin, atMax } = useCharmSize();
   const breakpoint = useBreakpoint();
   const isMobile = breakpoint === "mobile";
 
@@ -37,6 +37,11 @@ export default function DawdlyApp() {
   function handleSaveEvent(event: import("@/lib/types").DawdlyEvent) {
     if (editingEvent) updateEvent(event);
     else addEvent(event);
+  }
+
+  function handleToggleDone(id: string) {
+    const event = events.find((e) => e.id === id);
+    if (event) updateEvent({ ...event, done: !event.done });
   }
 
   const weekStep = isMobile ? 3 : 7;
@@ -82,17 +87,17 @@ export default function DawdlyApp() {
         className="flex-shrink-0 px-4 py-3 flex items-center justify-between gap-2"
         style={{ borderBottom: "1.5px dashed rgba(180,140,90,0.3)" }}
       >
-        {/* Wordmark */}
-        <div className="flex items-center gap-1.5 flex-shrink-0">
-          <span style={{ fontFamily: "var(--font-serif)", fontSize: isMobile ? 22 : 26, fontWeight: 700, color: "var(--accent)", letterSpacing: "-0.01em" }}>
-            dawdly
-          </span>
-          <span style={{ color: "var(--marker)", fontSize: isMobile ? 18 : 24 }}>✦</span>
-        </div>
+        {/* Wordmark + View switcher */}
+        <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="flex items-center gap-1.5">
+            <span style={{ fontFamily: "var(--font-serif)", fontSize: isMobile ? 22 : 26, fontWeight: 700, color: "var(--accent)", letterSpacing: "-0.01em" }}>
+              dawdly
+            </span>
+            <span style={{ color: "var(--marker)", fontSize: isMobile ? 18 : 24 }}>✦</span>
+          </div>
 
-        {/* View switcher — hidden on mobile (bottom nav instead) */}
-        {!isMobile && (
-          <div className="flex justify-center flex-1">
+          {/* View switcher — hidden on mobile (bottom nav instead) */}
+          {!isMobile && (
             <div className="flex rounded-xl overflow-hidden" style={{ background: "rgba(180,140,90,0.12)", padding: 2 }}>
               {(["day", "week", "month"] as CalendarView[]).map((v) => (
                 <button
@@ -111,19 +116,12 @@ export default function DawdlyApp() {
                 </button>
               ))}
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Nav controls */}
         <div className="flex items-center gap-1.5 flex-shrink-0">
-          {/* Charm size — desktop week only */}
-          {!isMobile && view === "week" && (
-            <div className="flex items-center gap-1 rounded-xl px-2" style={{ background: "rgba(180,140,90,0.12)" }}>
-              <span style={{ fontFamily: "var(--font-hand)", fontSize: 15, color: "var(--ink-muted)", userSelect: "none" }}>charm size</span>
-              <button onClick={decrease} disabled={atMin} className="w-7 h-8 flex items-center justify-center" style={{ fontSize: 18, color: atMin ? "var(--ink-faint)" : "var(--ink-muted)" }}>−</button>
-              <button onClick={increase} disabled={atMax} className="w-7 h-8 flex items-center justify-center" style={{ fontSize: 18, color: atMax ? "var(--ink-faint)" : "var(--ink-muted)" }}>+</button>
-            </div>
-          )}
+          <GoogleCalendarImport events={events} addEvent={addEvent} />
           <button
             onClick={handleToday}
             className="px-3 py-1.5 rounded-xl"
@@ -165,7 +163,7 @@ export default function DawdlyApp() {
             onDayClick={handleDayClick}
             onDeleteEvent={deleteEvent}
             onEventClick={openEditModal}
-            charmSize={charmSize}
+            onToggleDone={handleToggleDone}
             breakpoint={breakpoint}
           />
         )}
@@ -184,6 +182,7 @@ export default function DawdlyApp() {
             onAddClick={() => openAddModal(anchor)}
             onDeleteEvent={deleteEvent}
             onEventClick={openEditModal}
+            onToggleDone={handleToggleDone}
             breakpoint={breakpoint}
           />
         )}

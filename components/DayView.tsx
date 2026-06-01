@@ -11,6 +11,7 @@ interface DayViewProps {
   onAddClick: () => void;
   onDeleteEvent: (id: string) => void;
   onEventClick: (event: DawdlyEvent) => void;
+  onToggleDone: (id: string) => void;
   breakpoint: Breakpoint;
 }
 
@@ -28,7 +29,7 @@ function cardColor(id: string) {
 }
 
 
-export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEvent, onEventClick, breakpoint }: DayViewProps) {
+export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEvent, onEventClick, onToggleDone, breakpoint }: DayViewProps) {
   const isMobile = breakpoint === "mobile";
   const { weekday, day } = formatDayHeader(date);
   const monthLabel = formatMonthYear(date);
@@ -110,7 +111,7 @@ export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEv
                       personal
                     </p>
                     {personalEvents.map((event) => (
-                      <DayEventCard key={event.id} event={event} onDelete={onDeleteEvent} onClick={onEventClick} />
+                      <DayEventCard key={event.id} event={event} onDelete={onDeleteEvent} onClick={onEventClick} onToggleDone={onToggleDone} />
                     ))}
                   </div>
 
@@ -123,14 +124,14 @@ export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEv
                       work
                     </p>
                     {workEvents.map((event) => (
-                      <DayEventCard key={event.id} event={event} onDelete={onDeleteEvent} onClick={onEventClick} />
+                      <DayEventCard key={event.id} event={event} onDelete={onDeleteEvent} onClick={onEventClick} onToggleDone={onToggleDone} />
                     ))}
                   </div>
                 </div>
               ) : (
                 <div className="flex flex-col gap-4 w-full">
                   {events.map((event) => (
-                    <DayEventCard key={event.id} event={event} onDelete={onDeleteEvent} onClick={onEventClick} />
+                    <DayEventCard key={event.id} event={event} onDelete={onDeleteEvent} onClick={onEventClick} onToggleDone={onToggleDone} />
                   ))}
                 </div>
               )}
@@ -156,7 +157,7 @@ export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEv
   );
 }
 
-function DayEventCard({ event, onDelete, onClick }: { event: DawdlyEvent; onDelete: (id: string) => void; onClick: (event: DawdlyEvent) => void }) {
+function DayEventCard({ event, onDelete, onClick, onToggleDone }: { event: DawdlyEvent; onDelete: (id: string) => void; onClick: (event: DawdlyEvent) => void; onToggleDone: (id: string) => void }) {
   const isWork = event.kind === "work";
 
   if (isWork) {
@@ -165,27 +166,39 @@ function DayEventCard({ event, onDelete, onClick }: { event: DawdlyEvent; onDele
         className="group relative flex items-start gap-3 cursor-pointer rounded-r-xl"
         onClick={() => onClick(event)}
         style={{
-          borderLeft: "3px solid rgba(120,110,100,0.35)",
+          borderLeft: `3px solid ${event.done ? "var(--accent)" : "rgba(120,110,100,0.35)"}`,
           paddingLeft: 12,
           paddingTop: 6,
           paddingBottom: 6,
           paddingRight: 28,
         }}
       >
+        {/* Done toggle */}
+        <button
+          onClick={(e) => { e.stopPropagation(); onToggleDone(event.id); }}
+          className={`flex-shrink-0 mt-0.5 rounded-full w-5 h-5 flex items-center justify-center transition-opacity ${event.done ? "opacity-100" : "opacity-0 group-hover:opacity-60"}`}
+          style={{
+            background: event.done ? "var(--accent)" : "transparent",
+            border: event.done ? "none" : "1.5px solid var(--ink-faint)",
+            color: event.done ? "#fff" : "transparent",
+            fontSize: 11,
+          }}
+          title={event.done ? "Mark undone" : "Mark done"}
+        >✓</button>
+
         <div className="flex-1 min-w-0">
           <p style={{
             fontFamily: "var(--font-hand)",
             fontSize: 15,
-            color: "var(--ink)",
+            color: event.done ? "var(--accent)" : "var(--ink)",
             lineHeight: 1.3,
+            textDecoration: event.done ? "line-through" : "none",
           }}>
             {event.title}
           </p>
-          {event.startTime && (
-            <p style={{ fontFamily: "var(--font-hand)", fontSize: 13, color: "var(--ink-faint)", marginTop: 2 }}>
-              {formatTime(event.startTime)}
-            </p>
-          )}
+          <p style={{ fontFamily: "var(--font-hand)", fontSize: 13, color: "var(--ink-faint)", marginTop: 2 }}>
+            {formatTime(event.startTime)}
+          </p>
           {event.note && (
             <p style={{
               fontFamily: "var(--font-hand)",
@@ -204,9 +217,7 @@ function DayEventCard({ event, onDelete, onClick }: { event: DawdlyEvent; onDele
           className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity rounded-full w-5 h-5 flex items-center justify-center"
           style={{ background: "rgba(74,61,49,0.08)", color: "var(--ink-faint)", fontSize: 13 }}
           title="Remove"
-        >
-          ×
-        </button>
+        >×</button>
       </div>
     );
   }
@@ -235,11 +246,9 @@ function DayEventCard({ event, onDelete, onClick }: { event: DawdlyEvent; onDele
         }}>
           {event.title}
         </p>
-        {event.startTime && (
-          <p style={{ fontFamily: "var(--font-hand)", fontSize: 16, color: "var(--ink-muted)", marginTop: 3 }}>
-            {formatTime(event.startTime)}
-          </p>
-        )}
+        <p style={{ fontFamily: "var(--font-hand)", fontSize: 16, color: "var(--ink-muted)", marginTop: 3 }}>
+          {formatTime(event.startTime)}
+        </p>
         {event.note && (
           <p style={{
             fontFamily: "var(--font-hand)",
