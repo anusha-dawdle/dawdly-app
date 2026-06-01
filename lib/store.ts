@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import type { DawdlyEvent } from "./types";
+import { resolveCharmId } from "./charms";
 
 const STORAGE_KEY = "dawdly_events";
 
@@ -9,7 +10,14 @@ function loadEvents(): DawdlyEvent[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
+    if (!raw) return [];
+    const parsed: DawdlyEvent[] = JSON.parse(raw);
+    return parsed.map((e) => ({
+      ...e,
+      charmId: resolveCharmId(e.charmId),
+      // Backfill endDate for events saved before it was required
+      endDate: e.endDate ?? e.date,
+    }));
   } catch {
     return [];
   }
@@ -65,3 +73,4 @@ export function useEvents() {
 
   return { events, addEvent, deleteEvent, updateEvent, getEventsForDate };
 }
+

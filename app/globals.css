@@ -1,26 +1,65 @@
 @import "tailwindcss";
 
-* {
-  box-sizing: border-box;
+/* ─── Design tokens ─────────────────────────────────────── */
+:root {
+  --paper:      #F3EBDA;
+  --ink:        #4A3D31;
+  --ink-muted:  #8C7B66;
+  --ink-faint:  #B7A98F;
+  --accent:     #DD8226;
+  --marker:     #C8623C;
+
+  --card-sage:   #DCE5CE;
+  --card-pink:   #F6D9E1;
+  --card-butter: #F7E6BE;
+  --card-mint:   #CFE7DD;
+
+  --card-sage-ink:   #3D4A30;
+  --card-pink-ink:   #5C2D3A;
+  --card-butter-ink: #5C430A;
+  --card-mint-ink:   #1E4A3A;
+
+  --border-warm: rgba(180, 140, 90, 0.18);
+  --shadow-warm: 0 2px 12px rgba(74, 61, 49, 0.13);
+
+  --font-serif:       Georgia, serif;
+  --font-hand:        Georgia, serif;
+  --font-sans:        var(--font-geist-sans), system-ui, sans-serif;
 }
 
-html,
-body {
+/* ─── Base ───────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  background: #fffdf9;
-  color: #2d2017;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
 }
 
-/* Smooth scrollbars */
-::-webkit-scrollbar {
-  width: 4px;
+/* Paper grain — low-opacity SVG noise overlay on the root */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 300px 300px;
 }
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: #e8ddd0;
-  border-radius: 99px;
-}
+
+/* Everything above the grain */
+body > * { position: relative; z-index: 1; }
+
+/* ─── Scrollbars ─────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--ink-faint); border-radius: 99px; }
+
+/* ─── Utility font classes ───────────────────────────────── */
+.font-serif { font-family: var(--font-serif); }
+.font-hand  { font-family: var(--font-hand); }
+.font-sans  { font-family: var(--font-sans); }

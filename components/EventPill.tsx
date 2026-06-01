@@ -21,7 +21,7 @@ export default function EventPill({
         <p
           className="text-center leading-tight w-full"
           style={{
-            color: "#D97706",
+            color: "#7C3D1A",
             fontSize: 12,
             display: "-webkit-box",
             WebkitLineClamp: 2,
@@ -59,11 +59,9 @@ export default function EventPill({
         >
           {event.title}
         </p>
-        {event.startTime && (
-          <p className="text-xs mt-0.5" style={{ color: "#B0A090" }}>
-            {formatTime(event.startTime)}
-          </p>
-        )}
+        <p className="text-xs mt-0.5" style={{ color: "#B0A090" }}>
+          {formatTime(event.startTime)}
+        </p>
       </div>
       {onDelete && (
         <button

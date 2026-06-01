@@ -1,7 +1,8 @@
 "use client";
 
 import type { DawdlyEvent } from "@/lib/types";
-import { formatDayHeader, formatMonthYear, isToday } from "@/lib/dates";
+import type { Breakpoint } from "@/lib/breakpoint";
+import { formatDayHeader, formatMonthYear, isToday, relativeDate, today } from "@/lib/dates";
 import CharmIcon from "./CharmIcon";
 
 interface DayViewProps {
@@ -9,128 +10,264 @@ interface DayViewProps {
   getEventsForDate: (date: string) => DawdlyEvent[];
   onAddClick: () => void;
   onDeleteEvent: (id: string) => void;
+  onEventClick: (event: DawdlyEvent) => void;
+  onToggleDone: (id: string) => void;
+  breakpoint: Breakpoint;
 }
 
-export default function DayView({
-  date,
-  getEventsForDate,
-  onAddClick,
-  onDeleteEvent,
-}: DayViewProps) {
+const CARD_COLORS = [
+  { bg: "var(--card-sage)",   ink: "var(--card-sage-ink)" },
+  { bg: "var(--card-pink)",   ink: "var(--card-pink-ink)" },
+  { bg: "var(--card-butter)", ink: "var(--card-butter-ink)" },
+  { bg: "var(--card-mint)",   ink: "var(--card-mint-ink)" },
+];
+
+function cardColor(id: string) {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (Math.imul(31, h) + id.charCodeAt(i)) | 0;
+  return CARD_COLORS[Math.abs(h) % CARD_COLORS.length];
+}
+
+
+export default function DayView({ date, getEventsForDate, onAddClick, onDeleteEvent, onEventClick, onToggleDone, breakpoint }: DayViewProps) {
+  const isMobile = breakpoint === "mobile";
   const { weekday, day } = formatDayHeader(date);
   const monthLabel = formatMonthYear(date);
   const events = getEventsForDate(date);
   const todayDay = isToday(date);
+  const isUpcoming = date > today();
+  const countdown = isUpcoming ? relativeDate(date) : null;
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Heading — matches week view style */}
-      <div className="pt-3 pb-1 text-center">
-        <span
-          className="text-3xl font-semibold"
-          style={{ color: "#7C3D1A", fontFamily: "Georgia, serif" }}
-        >
+    <div className="flex flex-col h-full" style={{ background: "var(--paper)" }}>
+
+      {/* Header */}
+      <div
+        className="flex-shrink-0 pt-4 pb-3"
+        style={{ borderBottom: "1.5px dashed rgba(180,140,90,0.3)", paddingLeft: isMobile ? 20 : 32, paddingRight: isMobile ? 20 : 32 }}
+      >
+        <p style={{ fontFamily: "var(--font-hand)", fontSize: isMobile ? 18 : 26, color: "var(--accent)" }}>
           {monthLabel}
-        </span>
-      </div>
-
-      {/* Day hero */}
-      <div className="px-8 pt-3 pb-5">
-        <p
-          className="text-sm uppercase tracking-widest font-medium"
-          style={{ color: todayDay ? "#D97706" : "#B0A090" }}
-        >
-          {weekday}
         </p>
-        <p
-          className="text-7xl font-bold leading-none"
-          style={{
-            color: todayDay ? "#D97706" : "#7C3D1A",
-            fontFamily: "Georgia, serif",
-          }}
-        >
-          {day}
-        </p>
-      </div>
-
-      {/* Events */}
-      {events.length === 0 ? (
-        <div className="flex-1 flex flex-col items-center justify-center gap-4 opacity-50">
-          <p
-            className="text-base text-center"
-            style={{ color: "#B0A090", fontFamily: "Georgia, serif" }}
-          >
-            Nothing yet. What are you
-            <br />
-            looking forward to?
+        <div className="flex items-baseline gap-3 mt-0.5">
+          <p style={{
+            fontFamily: "var(--font-serif)",
+            fontSize: isMobile ? 48 : 72,
+            fontWeight: 700,
+            lineHeight: 1,
+            color: todayDay ? "var(--accent)" : "var(--ink)",
+          }}>
+            {day}
           </p>
-          <button
-            onClick={onAddClick}
-            className="rounded-xl px-6 py-2.5 text-sm font-medium"
-            style={{ background: "#FDE68A", color: "#92400E" }}
-          >
-            Add something
-          </button>
-        </div>
-      ) : (
-        <div className="flex-1 overflow-y-auto px-6 pb-6">
-          <div className="flex flex-col gap-2">
-            {events.map((event) => (
-              <DayEventCard
-                key={event.id}
-                event={event}
-                onDelete={onDeleteEvent}
-              />
-            ))}
-            <button
-              onClick={onAddClick}
-              className="mt-1 rounded-xl py-2.5 text-sm font-medium text-center"
-              style={{ background: "#F5EFE6", color: "#B0A090" }}
-            >
-              + add more
-            </button>
+          <div className="flex flex-col">
+            <p style={{
+              fontFamily: "var(--font-hand)",
+              fontSize: isMobile ? 16 : 22,
+              color: todayDay ? "var(--accent)" : "var(--ink-muted)",
+            }}>
+              {weekday}
+            </p>
+            {countdown && (
+              <p style={{ fontFamily: "var(--font-hand)", fontSize: isMobile ? 13 : 16, color: "var(--marker)", fontStyle: "italic" }}>
+                {countdown}
+              </p>
+            )}
+            {todayDay && (
+              <p style={{ fontFamily: "var(--font-hand)", fontSize: isMobile ? 12 : 14, color: "var(--accent)", fontStyle: "italic" }}>
+                today ♡
+              </p>
+            )}
           </div>
         </div>
-      )}
+      </div>
+
+      {/* Event list */}
+      <div className="flex-1 overflow-y-auto px-6 py-5">
+        {events.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-full gap-4 opacity-60">
+            <p style={{ fontFamily: "var(--font-hand)", fontSize: 20, color: "var(--ink-muted)", textAlign: "center" }}>
+              nothing yet —<br />add something to look forward to ♡
+            </p>
+            <button
+              onClick={onAddClick}
+              className="rounded-xl px-6 py-2.5"
+              style={{ background: "var(--card-butter)", color: "var(--card-butter-ink)", fontFamily: "var(--font-hand)", fontSize: 16 }}
+            >
+              + add something
+            </button>
+          </div>
+        ) : (() => {
+          const personalEvents = events.filter((e) => e.kind !== "work");
+          const workEvents = events.filter((e) => e.kind === "work");
+          const hasBoth = personalEvents.length > 0 && workEvents.length > 0;
+
+          return (
+            <div className="flex flex-col gap-4 w-full">
+              {hasBoth ? (
+                <div className={isMobile ? "flex flex-col gap-4" : "flex gap-5 items-start"}>
+                  {/* Personal column */}
+                  <div className="flex-1 flex flex-col gap-4 min-w-0">
+                    <p style={{ fontFamily: "var(--font-hand)", fontSize: 16, color: "var(--ink-muted)", fontStyle: "italic" }}>
+                      personal
+                    </p>
+                    {personalEvents.map((event) => (
+                      <DayEventCard key={event.id} event={event} onDelete={onDeleteEvent} onClick={onEventClick} onToggleDone={onToggleDone} />
+                    ))}
+                  </div>
+
+                  {/* Dashed divider — desktop/tablet only */}
+                  {!isMobile && <div style={{ width: 1, alignSelf: "stretch", borderLeft: "1.5px dashed rgba(180,140,90,0.3)", flexShrink: 0 }} />}
+
+                  {/* Work column */}
+                  <div className="flex-1 flex flex-col gap-3 min-w-0">
+                    <p style={{ fontFamily: "var(--font-hand)", fontSize: 16, color: "var(--ink-muted)", fontStyle: "italic" }}>
+                      work
+                    </p>
+                    {workEvents.map((event) => (
+                      <DayEventCard key={event.id} event={event} onDelete={onDeleteEvent} onClick={onEventClick} onToggleDone={onToggleDone} />
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-4 w-full">
+                  {events.map((event) => (
+                    <DayEventCard key={event.id} event={event} onDelete={onDeleteEvent} onClick={onEventClick} onToggleDone={onToggleDone} />
+                  ))}
+                </div>
+              )}
+
+              <button
+                onClick={onAddClick}
+                className="rounded-xl py-3 text-center"
+                style={{
+                  background: "rgba(180,140,90,0.1)",
+                  border: "1.5px dashed rgba(180,140,90,0.35)",
+                  fontFamily: "var(--font-hand)",
+                  fontSize: 16,
+                  color: "var(--ink-faint)",
+                }}
+              >
+                + add more
+              </button>
+            </div>
+          );
+        })()}
+      </div>
     </div>
   );
 }
 
-function DayEventCard({
-  event,
-  onDelete,
-}: {
-  event: DawdlyEvent;
-  onDelete: (id: string) => void;
-}) {
-  return (
-    <div
-      className="group flex items-center gap-4 rounded-2xl px-4 py-3"
-      style={{ background: "#FFF8F0", border: "1.5px solid #F0EBE0" }}
-    >
-      <CharmIcon charmId={event.charmId} size={56} />
-      <div className="flex-1 min-w-0">
-        <p
-          className="text-base font-semibold leading-snug"
-          style={{ color: "#7C3D1A", fontFamily: "Georgia, serif" }}
-        >
-          {event.title}
-        </p>
-        {event.startTime && (
-          <p className="text-sm mt-0.5" style={{ color: "#B0A090" }}>
+function DayEventCard({ event, onDelete, onClick, onToggleDone }: { event: DawdlyEvent; onDelete: (id: string) => void; onClick: (event: DawdlyEvent) => void; onToggleDone: (id: string) => void }) {
+  const isWork = event.kind === "work";
+
+  if (isWork) {
+    return (
+      <div
+        className="group relative flex items-start gap-3 cursor-pointer rounded-r-xl"
+        onClick={() => onClick(event)}
+        style={{
+          borderLeft: `3px solid ${event.done ? "var(--accent)" : "rgba(120,110,100,0.35)"}`,
+          paddingLeft: 12,
+          paddingTop: 6,
+          paddingBottom: 6,
+          paddingRight: 28,
+        }}
+      >
+        {/* Done toggle */}
+        <button
+          onClick={(e) => { e.stopPropagation(); onToggleDone(event.id); }}
+          className={`flex-shrink-0 mt-0.5 rounded-full w-5 h-5 flex items-center justify-center transition-opacity ${event.done ? "opacity-100" : "opacity-0 group-hover:opacity-60"}`}
+          style={{
+            background: event.done ? "var(--accent)" : "transparent",
+            border: event.done ? "none" : "1.5px solid var(--ink-faint)",
+            color: event.done ? "#fff" : "transparent",
+            fontSize: 11,
+          }}
+          title={event.done ? "Mark undone" : "Mark done"}
+        >✓</button>
+
+        <div className="flex-1 min-w-0">
+          <p style={{
+            fontFamily: "var(--font-hand)",
+            fontSize: 15,
+            color: event.done ? "var(--accent)" : "var(--ink)",
+            lineHeight: 1.3,
+            textDecoration: event.done ? "line-through" : "none",
+          }}>
+            {event.title}
+          </p>
+          <p style={{ fontFamily: "var(--font-hand)", fontSize: 13, color: "var(--ink-faint)", marginTop: 2 }}>
             {formatTime(event.startTime)}
           </p>
-        )}
+          {event.note && (
+            <p style={{
+              fontFamily: "var(--font-hand)",
+              fontSize: 13,
+              color: "var(--ink-muted)",
+              fontStyle: "italic",
+              marginTop: 3,
+              lineHeight: 1.35,
+            }}>
+              {event.note}
+            </p>
+          )}
+        </div>
+        <button
+          onClick={(e) => { e.stopPropagation(); onDelete(event.id); }}
+          className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity rounded-full w-5 h-5 flex items-center justify-center"
+          style={{ background: "rgba(74,61,49,0.08)", color: "var(--ink-faint)", fontSize: 13 }}
+          title="Remove"
+        >×</button>
+      </div>
+    );
+  }
+
+  const col = cardColor(event.id);
+
+  return (
+    <div
+      className="group relative flex items-center gap-5 rounded-2xl px-5 py-4 cursor-pointer"
+      onClick={() => onClick(event)}
+      style={{
+        background: col.bg,
+        boxShadow: "0 3px 14px rgba(74,61,49,0.13), 0 1px 4px rgba(74,61,49,0.08)",
+      }}
+    >
+      <CharmIcon charmId={event.charmId} size={160} className="flex-shrink-0" />
+
+      {/* Text */}
+      <div className="flex-1 min-w-0">
+        <p style={{
+          fontFamily: "var(--font-serif)",
+          fontSize: 20,
+          fontWeight: 600,
+          color: "var(--accent)",
+          lineHeight: 1.2,
+        }}>
+          {event.title}
+        </p>
+        <p style={{ fontFamily: "var(--font-hand)", fontSize: 16, color: "var(--ink-muted)", marginTop: 3 }}>
+          {formatTime(event.startTime)}
+        </p>
         {event.note && (
-          <p className="text-sm mt-1 italic" style={{ color: "#B0A090" }}>
+          <p style={{
+            fontFamily: "var(--font-hand)",
+            fontSize: 14,
+            color: "var(--ink-muted)",
+            fontStyle: "italic",
+            marginTop: 4,
+            lineHeight: 1.35,
+          }}>
             {event.note}
           </p>
         )}
       </div>
+
+      {/* Delete */}
       <button
-        onClick={() => onDelete(event.id)}
-        className="opacity-0 group-hover:opacity-100 transition-opacity rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0"
-        style={{ color: "#B0A090", background: "#F0EBE0", fontSize: 14 }}
+        onClick={(e) => { e.stopPropagation(); onDelete(event.id); }}
+        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity rounded-full w-5 h-5 flex items-center justify-center"
+        style={{ background: "rgba(74,61,49,0.12)", color: "var(--ink-muted)", fontSize: 13 }}
         title="Remove"
       >
         ×
@@ -142,6 +279,5 @@ function DayEventCard({
 function formatTime(t: string): string {
   const [h, m] = t.split(":").map(Number);
   const period = h >= 12 ? "pm" : "am";
-  const hour = h % 12 || 12;
-  return `${hour}:${String(m).padStart(2, "0")} ${period}`;
+  return `${h % 12 || 12}:${String(m).padStart(2, "0")} ${period}`;
 }

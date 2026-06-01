@@ -1,35 +1,17 @@
-export type CharmId =
-  | "coffee"
-  | "dinner"
-  | "party"
-  | "movie"
-  | "travel"
-  | "picnic"
-  | "concert"
-  | "date"
-  | "friends"
-  | "spa"
-  | "book"
-  | "art"
-  | "sports"
-  | "birthday"
-  | "sunset"
-  | "garden";
-
-export interface Charm {
-  id: CharmId;
-  label: string;
-  svg: string; // inline SVG string
-}
+export type { CharmId } from "./charms";
 
 export interface DawdlyEvent {
   id: string;
   title: string;
-  charmId: CharmId;
-  date: string; // ISO date string YYYY-MM-DD
-  startTime?: string; // HH:MM 24h, optional
-  endTime?: string;
+  kind?: "personal" | "work"; // undefined treated as "personal"
+  charmId: string; // stored as raw string; resolved via resolveCharmId() at render time
+  date: string;     // ISO YYYY-MM-DD — start date, used for calendar placement
+  endDate: string;  // ISO YYYY-MM-DD
+  startTime: string; // HH:MM 24h
+  endTime: string;
   note?: string;
+  done?: boolean;
+  googleEventId?: string;
 }
 
 export type CalendarView = "week" | "month" | "day";

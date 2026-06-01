@@ -39,13 +39,13 @@ export function getDaysInMonth(iso: string): string[] {
 
 export function formatMonthYear(iso: string): string {
   const d = new Date(iso + "T12:00:00");
-  return d.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  return d.toLocaleDateString("en-US", { month: "long", year: "numeric" }).toLowerCase();
 }
 
 export function formatDayHeader(iso: string): { weekday: string; day: string } {
   const d = new Date(iso + "T12:00:00");
   return {
-    weekday: d.toLocaleDateString("en-US", { weekday: "short" }),
+    weekday: d.toLocaleDateString("en-US", { weekday: "short" }).toLowerCase(),
     day: String(d.getDate()),
   };
 }
