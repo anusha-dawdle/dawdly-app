@@ -36,6 +36,24 @@ export type CharmId =
   | "wedding-ring"
   | "wine-glass"
   | "yoga"
+  | "bicycle"
+  | "black-car"
+  | "burger"
+  | "bus"
+  | "cards"
+  | "chessboard"
+  | "chips-and-salsa"
+  | "computer"
+  | "grocery-bag"
+  | "hairdryer"
+  | "nails"
+  | "palm-trees"
+  | "picnic"
+  | "pink-car"
+  | "pizza"
+  | "rice-bowl"
+  | "swimming"
+  | "tuxedo"
   // — extra / fallback charms (not shown in picker) —
   | "extra-flower-1"
   | "extra-flower-2"
@@ -118,7 +136,25 @@ export const CHARMS: Record<CharmId, Charm> = {
   "tennis":        { id: "tennis",        label: "Tennis",       file: "tennis.png",         keywords: ["tennis", "sport", "racket", "game", "court", "badminton"] },
   "wedding-ring":  { id: "wedding-ring",  label: "Wedding",      file: "wedding ring.png",   keywords: ["wedding", "marriage", "engagement", "anniversary", "rings", "bride", "groom"] },
   "wine-glass":    { id: "wine-glass",    label: "Drinks",       file: "wine glass.png",     keywords: ["wine", "drinks", "drink", "dinner", "date", "cocktail", "bar", "toast", "champagne"] },
-  "yoga":          { id: "yoga",          label: "Yoga",         file: "yoga.png",           keywords: ["yoga", "meditation", "wellness", "pilates", "stretch", "mindfulness"] },
+  "yoga":          { id: "yoga",          label: "Yoga",          file: "yoga.png",            keywords: ["yoga", "meditation", "wellness", "pilates", "stretch", "mindfulness"] },
+  "bicycle":       { id: "bicycle",       label: "Cycling",       file: "bicycle.png",          keywords: ["bicycle", "bike", "cycling", "biking", "cycle", "ride", "spin"] },
+  "black-car":     { id: "black-car",     label: "Night Out",     file: "black car.png",        keywords: ["night out", "nightout", "limo", "uber", "taxi", "chauffeur", "fancy", "gala"] },
+  "burger":        { id: "burger",        label: "Burgers",       file: "burger.png",           keywords: ["burger", "hamburger", "bbq", "grill", "cookout", "barbecue", "fast food"] },
+  "bus":           { id: "bus",           label: "Bus Trip",      file: "bus.png",              keywords: ["bus", "transit", "commute", "trip", "charter", "travel"] },
+  "cards":         { id: "cards",         label: "Game Night",    file: "cards.png",            keywords: ["cards", "poker", "card game", "game night", "casino", "blackjack"] },
+  "chessboard":    { id: "chessboard",    label: "Board Games",   file: "chessboard.png",       keywords: ["chess", "chessboard", "board game", "strategy", "checkers", "game night"] },
+  "chips-and-salsa":{ id: "chips-and-salsa", label: "Snacks",    file: "chips and salsa.png",  keywords: ["chips", "salsa", "snack", "snacks", "nachos", "taco", "mexican"] },
+  "computer":      { id: "computer",      label: "Work From Home",file: "computer.png",         keywords: ["computer", "work from home", "wfh", "remote", "laptop", "zoom"] },
+  "grocery-bag":   { id: "grocery-bag",   label: "Grocery Run",   file: "grocery bag.png",      keywords: ["grocery", "groceries", "market", "farmers market", "errands", "food"] },
+  "hairdryer":     { id: "hairdryer",     label: "Blowout",       file: "hairdryer.png",        keywords: ["hair", "hairdryer", "blowout", "salon", "hairdresser", "haircut"] },
+  "nails":         { id: "nails",         label: "Nails",         file: "nails.png",            keywords: ["nails", "manicure", "pedicure", "nail salon", "gel", "polish"] },
+  "palm-trees":    { id: "palm-trees",    label: "Tropical",      file: "palm trees.png",       keywords: ["tropical", "palm", "island", "resort", "vacation", "hawaii", "paradise"] },
+  "picnic":        { id: "picnic",        label: "Picnic",        file: "picnic.png",           keywords: ["picnic", "park", "outdoor dining", "outdoors", "lawn", "blanket"] },
+  "pink-car":      { id: "pink-car",      label: "Girls Trip",    file: "pink car.png",         keywords: ["girls trip", "girls", "ladies", "bachelorette", "road trip", "girl"] },
+  "pizza":         { id: "pizza",         label: "Pizza",         file: "pizza.png",            keywords: ["pizza", "pie", "italian", "takeout", "delivery", "dinner"] },
+  "rice-bowl":     { id: "rice-bowl",     label: "Lunch",         file: "rice bowl.png",        keywords: ["rice", "bowl", "lunch", "poke", "japanese", "korean", "chinese", "asian"] },
+  "swimming":      { id: "swimming",      label: "Swimming",      file: "swimming.png",         keywords: ["swim", "swimming", "pool", "laps", "aqua"] },
+  "tuxedo":        { id: "tuxedo",        label: "Black Tie",     file: "tuxedo.png",           keywords: ["tuxedo", "formal", "gala", "black tie", "suit", "fancy", "dress up"] },
 
   // Extra / fallback charms
   "extra-flower-1": { id: "extra-flower-1", label: "Flower",    file: "extra flower 1.png",  keywords: [] },
@@ -173,17 +209,35 @@ export const CHARM_LIST: Charm[] = [
   CHARMS["wedding-ring"],
   CHARMS["wine-glass"],
   CHARMS["yoga"],
+  CHARMS["bicycle"],
+  CHARMS["black-car"],
+  CHARMS["burger"],
+  CHARMS["bus"],
+  CHARMS["cards"],
+  CHARMS["chessboard"],
+  CHARMS["chips-and-salsa"],
+  CHARMS["computer"],
+  CHARMS["grocery-bag"],
+  CHARMS["hairdryer"],
+  CHARMS["nails"],
+  CHARMS["palm-trees"],
+  CHARMS["picnic"],
+  CHARMS["pink-car"],
+  CHARMS["pizza"],
+  CHARMS["rice-bowl"],
+  CHARMS["swimming"],
+  CHARMS["tuxedo"],
 ];
 
 export const CHARM_CATEGORIES: { label: string; ids: CharmId[] }[] = [
-  { label: "Food & Drinks",      ids: ["coffee", "ramen", "baking", "cupcake", "wine-glass", "popcorn"] },
-  { label: "Travel & Outdoors",  ids: ["plane", "roadtrip-van", "car", "boat", "beach", "mountains", "camping-tent", "hiking-boots"] },
-  { label: "Sports & Fitness",   ids: ["gym", "yoga", "basketball", "football", "soccer", "tennis"] },
-  { label: "Celebrations",       ids: ["balloons", "birthday-cake", "gifts", "graduation-cap", "wedding-ring"] },
+  { label: "Food & Drinks",      ids: ["coffee", "ramen", "burger", "pizza", "rice-bowl", "chips-and-salsa", "baking", "cupcake", "wine-glass", "popcorn", "picnic", "grocery-bag"] },
+  { label: "Travel & Outdoors",  ids: ["plane", "roadtrip-van", "car", "bus", "boat", "beach", "palm-trees", "mountains", "camping-tent", "hiking-boots"] },
+  { label: "Sports & Fitness",   ids: ["gym", "yoga", "swimming", "bicycle", "basketball", "football", "soccer", "tennis"] },
+  { label: "Celebrations",       ids: ["balloons", "birthday-cake", "gifts", "graduation-cap", "wedding-ring", "tuxedo"] },
   { label: "Arts & Creativity",  ids: ["easel", "camera", "book"] },
-  { label: "Social & Lifestyle", ids: ["friends", "mic", "shopping-bags", "dress"] },
-  { label: "Home & Family",      ids: ["new-house", "babies", "cat-and-dog"] },
-  { label: "Wellness",           ids: ["spa"] },
+  { label: "Social & Lifestyle", ids: ["friends", "mic", "cards", "chessboard", "shopping-bags", "dress", "black-car", "pink-car"] },
+  { label: "Home & Family",      ids: ["new-house", "babies", "cat-and-dog", "computer"] },
+  { label: "Wellness",           ids: ["spa", "nails", "hairdryer"] },
 ];
 
 /** Maps old charm ids (from previous design or legacy localStorage) to current ids. */
@@ -194,7 +248,7 @@ const LEGACY_MAP: Record<string, CharmId> = {
   party:    "balloons",
   movie:    "popcorn",
   travel:   "plane",
-  picnic:   "extra-sun",
+  picnic:   "picnic",
   concert:  "wine-glass",
   date:     "wine-glass",
   friends:  "friends",
