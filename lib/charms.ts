@@ -248,13 +248,13 @@ export const CHARM_LIST: Charm[] = [
 ];
 
 export const CHARM_CATEGORIES: { label: string; ids: CharmId[] }[] = [
-  { label: "Food & Drinks",      ids: ["coffee", "ramen", "burger", "pizza", "rice-bowl", "chips-and-salsa", "beer", "baking", "cooking", "cupcake", "wine-glass", "popcorn", "picnic", "grocery-bag"] },
+  { label: "Food & Drinks",      ids: ["coffee", "ramen", "burger", "pizza", "rice-bowl", "chips-and-salsa", "beer", "cupcake", "wine-glass", "popcorn", "picnic", "grocery-bag"] },
   { label: "Travel & Outdoors",  ids: ["plane", "roadtrip-van", "car", "bus", "boat", "beach", "palm-trees", "mountains", "camping-tent", "hiking-boots"] },
   { label: "Sports & Fitness",   ids: ["gym", "yoga", "swimming", "bicycle", "basketball", "football", "soccer", "tennis"] },
   { label: "Celebrations",       ids: ["balloons", "birthday-cake", "gifts", "graduation-cap", "wedding-ring", "tuxedo"] },
-  { label: "Arts & Creativity",  ids: ["easel", "camera", "book", "guitar", "theater", "arts-and-crafts"] },
+  { label: "Hobbies",            ids: ["easel", "camera", "book", "guitar", "theater", "arts-and-crafts", "baking", "cooking", "gardening"] },
   { label: "Social & Lifestyle", ids: ["friends", "mic", "cards", "chessboard", "shopping-bags", "dress", "black-car", "pink-car"] },
-  { label: "Home & Family",      ids: ["new-house", "babies", "cat-and-dog", "computer", "gardening"] },
+  { label: "Home & Family",      ids: ["new-house", "babies", "cat-and-dog", "computer"] },
   { label: "Wellness",           ids: ["spa", "nails", "hairdryer"] },
 ];
 
