@@ -332,10 +332,12 @@ function WorkEventBlock({
   placed,
   onEventClick,
   onDeleteEvent,
+  onToggleDone,
 }: {
   placed: WorkPlaced;
   onEventClick: (e: DawdlyEvent) => void;
   onDeleteEvent: (id: string) => void;
+  onToggleDone: (id: string) => void;
 }) {
   const { event, top, height, col, totalCols, isContinuation } = placed;
   const pct = 100 / totalCols;
@@ -350,8 +352,8 @@ function WorkEventBlock({
         left: `calc(${col * pct}% + 2px)`,
         width: `calc(${pct}% - 4px)`,
         borderRadius: 6,
-        background: "rgba(180,140,90,0.18)",
-        borderLeft: "3px solid var(--accent)",
+        background: event.done ? "rgba(180,140,90,0.10)" : "rgba(180,140,90,0.18)",
+        borderLeft: `3px solid ${event.done ? "rgba(180,140,90,0.4)" : "var(--accent)"}`,
         boxShadow: "0 1px 3px rgba(74,61,49,0.10)",
         padding: "2px 5px",
         zIndex: 2,
@@ -367,7 +369,7 @@ function WorkEventBlock({
         fontFamily: "var(--font-hand)",
         fontSize: 11,
         fontWeight: 600,
-        color: "var(--ink)",
+        color: event.done ? "var(--ink-faint)" : "var(--ink)",
         lineHeight: 1.2,
         overflow: "hidden",
         display: "-webkit-box",
@@ -382,6 +384,19 @@ function WorkEventBlock({
           {formatTime(event.startTime)}
         </p>
       )}
+      {/* Done toggle */}
+      <button
+        onClick={(e) => { e.stopPropagation(); onToggleDone(event.id); }}
+        className={`absolute bottom-0.5 left-0.5 rounded-full w-4 h-4 flex items-center justify-center transition-opacity ${event.done ? "opacity-100" : "opacity-0 group-hover:opacity-60"}`}
+        style={{
+          background: event.done ? "var(--accent)" : "transparent",
+          border: event.done ? "none" : "1.5px solid var(--ink-faint)",
+          color: "#fff",
+          fontSize: 9,
+        }}
+        title={event.done ? "Mark undone" : "Mark done"}
+      >✓</button>
+      {/* Delete */}
       <button
         onClick={(e) => { e.stopPropagation(); onDeleteEvent(event.id); }}
         className="absolute top-0.5 right-0.5 opacity-0 group-hover:opacity-100 transition-opacity rounded-full w-4 h-4 flex items-center justify-center"
@@ -528,6 +543,7 @@ export default function WeekView({
   onDayClick,
   onDeleteEvent,
   onEventClick,
+  onToggleDone,
   breakpoint,
 }: WeekViewProps) {
   const isMobile = breakpoint === "mobile";
@@ -686,6 +702,7 @@ export default function WeekView({
                       placed={p}
                       onEventClick={onEventClick}
                       onDeleteEvent={onDeleteEvent}
+                      onToggleDone={onToggleDone}
                     />
                   ))}
 

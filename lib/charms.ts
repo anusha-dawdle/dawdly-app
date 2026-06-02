@@ -54,6 +54,12 @@ export type CharmId =
   | "rice-bowl"
   | "swimming"
   | "tuxedo"
+  | "arts-and-crafts"
+  | "beer"
+  | "cooking"
+  | "gardening"
+  | "guitar"
+  | "theater"
   // — extra / fallback charms (not shown in picker) —
   | "extra-flower-1"
   | "extra-flower-2"
@@ -155,6 +161,12 @@ export const CHARMS: Record<CharmId, Charm> = {
   "rice-bowl":     { id: "rice-bowl",     label: "Lunch",         file: "rice bowl.png",        keywords: ["rice", "bowl", "lunch", "poke", "japanese", "korean", "chinese", "asian"] },
   "swimming":      { id: "swimming",      label: "Swimming",      file: "swimming.png",         keywords: ["swim", "swimming", "pool", "laps", "aqua"] },
   "tuxedo":        { id: "tuxedo",        label: "Black Tie",     file: "tuxedo.png",           keywords: ["tuxedo", "formal", "gala", "black tie", "suit", "fancy", "dress up"] },
+  "arts-and-crafts":{ id: "arts-and-crafts", label: "Arts & Crafts", file: "arts and crafts.png", keywords: ["arts", "crafts", "art", "craft", "knitting", "sewing", "diy", "creative", "making"] },
+  "beer":          { id: "beer",          label: "Drinks",        file: "beer.png",             keywords: ["beer", "pub", "bar", "brewery", "drinks", "happy hour", "pint", "craft beer"] },
+  "cooking":       { id: "cooking",       label: "Cooking",       file: "cooking.png",          keywords: ["cooking", "cook", "kitchen", "recipe", "chef", "meal prep", "dinner", "homemade"] },
+  "gardening":     { id: "gardening",     label: "Gardening",     file: "gardening.png",        keywords: ["gardening", "garden", "plants", "planting", "flowers", "outdoors", "nature"] },
+  "guitar":        { id: "guitar",        label: "Music",         file: "guitar.png",           keywords: ["guitar", "music", "band", "jam", "instrument", "practice", "playing", "musician"] },
+  "theater":       { id: "theater",       label: "Theater",       file: "theater.png",          keywords: ["theater", "theatre", "play", "show", "musical", "performance", "stage", "broadway"] },
 
   // Extra / fallback charms
   "extra-flower-1": { id: "extra-flower-1", label: "Flower",    file: "extra flower 1.png",  keywords: [] },
@@ -227,16 +239,22 @@ export const CHARM_LIST: Charm[] = [
   CHARMS["rice-bowl"],
   CHARMS["swimming"],
   CHARMS["tuxedo"],
+  CHARMS["arts-and-crafts"],
+  CHARMS["beer"],
+  CHARMS["cooking"],
+  CHARMS["gardening"],
+  CHARMS["guitar"],
+  CHARMS["theater"],
 ];
 
 export const CHARM_CATEGORIES: { label: string; ids: CharmId[] }[] = [
-  { label: "Food & Drinks",      ids: ["coffee", "ramen", "burger", "pizza", "rice-bowl", "chips-and-salsa", "baking", "cupcake", "wine-glass", "popcorn", "picnic", "grocery-bag"] },
+  { label: "Food & Drinks",      ids: ["coffee", "ramen", "burger", "pizza", "rice-bowl", "chips-and-salsa", "beer", "baking", "cooking", "cupcake", "wine-glass", "popcorn", "picnic", "grocery-bag"] },
   { label: "Travel & Outdoors",  ids: ["plane", "roadtrip-van", "car", "bus", "boat", "beach", "palm-trees", "mountains", "camping-tent", "hiking-boots"] },
   { label: "Sports & Fitness",   ids: ["gym", "yoga", "swimming", "bicycle", "basketball", "football", "soccer", "tennis"] },
   { label: "Celebrations",       ids: ["balloons", "birthday-cake", "gifts", "graduation-cap", "wedding-ring", "tuxedo"] },
-  { label: "Arts & Creativity",  ids: ["easel", "camera", "book"] },
+  { label: "Arts & Creativity",  ids: ["easel", "camera", "book", "guitar", "theater", "arts-and-crafts"] },
   { label: "Social & Lifestyle", ids: ["friends", "mic", "cards", "chessboard", "shopping-bags", "dress", "black-car", "pink-car"] },
-  { label: "Home & Family",      ids: ["new-house", "babies", "cat-and-dog", "computer"] },
+  { label: "Home & Family",      ids: ["new-house", "babies", "cat-and-dog", "computer", "gardening"] },
   { label: "Wellness",           ids: ["spa", "nails", "hairdryer"] },
 ];
 

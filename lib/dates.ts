@@ -3,7 +3,8 @@ export function toISO(date: Date): string {
 }
 
 export function today(): string {
-  return toISO(new Date());
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
 export function addDays(iso: string, n: number): string {
